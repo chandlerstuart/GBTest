@@ -15,6 +15,7 @@ Ver. Author        Date        Detail
 1.0  J Radcliffe   2023-10-10  Initial development.
 1.1  J Radcliffe   2023-12-21  Remove Remaining Promotions
 1.2  C Stuart      2024-02-08  Added new field entry (IsPromotionActive__c) to 'Promotion Assignment' to forcefully activate a Promotion & Modified 'Rating__c' field API Name to 'PromotionRating__c'
+1.2  C Stuart      Test Ignore
 */ 
 @isTest
 private class PromotionFinderControllerTest {
