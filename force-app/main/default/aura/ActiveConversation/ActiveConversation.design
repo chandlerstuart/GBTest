@@ -1,0 +1,4 @@
+<design:component >
+    <design:attribute name="conversationLookupFieldName" label="Conversation Lookup Field Name" description="The API name of the field linking the active conversation to the record"/>
+    <design:attribute name="canvasAppDeveloperName" label="Canvas App Developer Name" description="The developer name of the connected app used direct the component the correct GXP environment (live vs test). Default = 'GXP_Message_Center' (the live app)"/>
+</design:component>

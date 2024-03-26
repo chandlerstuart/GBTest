@@ -1,0 +1,42 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,forceCommunity:availableForAllPageTypes" access="global" controller="AbsentEmployeeListControllerExt">
+    <style type="text/css">
+    	div.scrollList {
+        	height: 200px;
+        }
+    </style>
+	<aura:attribute name="absenceList" type="AbsentEmployeeListControllerExt.AbsentWrapper[]"/>
+	<aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <h3 class="base-items-header"><strong>WHO'S OUT TODAY?</strong></h3>
+    <br/>
+    <div class="scrollList  slds-scrollable--y">
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        <tr class="slds-text-title--caps slds-text-body--x-small">
+	    	<th scope="col"><div class="slds-truncate" title="Name">Name</div></th>
+            <th scope="col"><div class="slds-truncate" title="Note">Note</div></th>
+            <!-- <th scope="col"><div class="slds-truncate" title="Start Date">Start Date</div></th> -->
+            <!-- <th scope="col"><div class="slds-truncate" title="End Date">End Date</div></th> -->
+        </tr>
+        </thead>
+        
+        <tbody>
+        <div aura:id="errorDiv"></div>
+        <aura:renderIf isTrue="{!v.absenceList.length > 0}">
+	    <aura:iteration items="{!v.absenceList}" var="a">
+            <tr>
+	    	    <c:EmpCommunity_AbsentEmployee absentEmployee="{!a}"/>
+            </tr>
+	    </aura:iteration>
+        </aura:renderIf>
+        <aura:renderIf isTrue="{!v.absenceList.length == 0}">
+        	<tr>
+            	<td colspan="3">No items to display</td>
+            </tr>    
+        </aura:renderIf>
+        </tbody>
+    </table>
+	</div>
+    <br/>
+    <strong><ui:outputURL class="slds-text-body--large" value="https://golfbreaks.my.salesforce.com/apex/LeaveCalendar?filterId=00Bb0000003PhXFEA0" target="_blank" label="Leave Calendar"/></strong>&nbsp;
+    <ui:outputText class="slds-text-body--small" value="(Opens in Salesforce)"/>
+</aura:component>

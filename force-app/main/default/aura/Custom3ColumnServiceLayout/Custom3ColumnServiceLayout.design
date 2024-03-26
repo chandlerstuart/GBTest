@@ -1,0 +1,9 @@
+<design:component label="Three-Column Template">
+    <flexipage:template>
+        <!-- Regions definition -->
+        <flexipage:region name="header" label="Header Region" defaultWidth="XLARGE"/>
+        <flexipage:region name="left" label="Left Region" defaultWidth="MEDIUM"/>
+        <flexipage:region name="middle" label="Middle Region" defaultWidth="XLARGE"/>
+        <flexipage:region name="right" label="Right Region" defaultWidth="MEDIUM" />
+    </flexipage:template>
+</design:component>

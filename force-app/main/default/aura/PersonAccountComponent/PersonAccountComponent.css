@@ -1,0 +1,30 @@
+.THIS .txtstyle {
+  float: left;    
+}
+
+
+.THIS .slds-col--padded {
+/*	background: #D9D9D9; 
+    border: 1px solid #868686; 
+    float: centre; */
+    
+}
+
+.THIS .slds-col--padded-large {
+    border: 1px solid yellow;
+   
+}
+
+.THIS .slds-grid {
+     /* border: 1px solid #868686; */
+    
+}
+
+.THIS .slds-button {
+    float: centre;
+    
+}
+
+.THIS slds {
+    background: #D9D9D9; 
+}

@@ -1,0 +1,8 @@
+<design:component>
+    <design:attribute name="new" label="'New Client' Banner Text" description="The text presented for clients who have never booked and never enquired before"/>
+    <design:attribute name="newColour" label="'New Client' Banner Colour" description="The colour of the banner presented for clients who have never booked and never enquired before. Accepts literal, hex and rgb colours."/>
+    <design:attribute name="enquirer" label="'Enquirer' Banner Text" description="The text presented for clients who have never booked but have enquired previously"/>
+    <design:attribute name="enquirerColour" label="'Equirer' Banner Colour" description="The colour of the banner presented for clients who have booked before. Accepts literal, hex and rgb colours."/>
+    <design:attribute name="booker" label="'Booker' Banner Text" description="The text presented for clients who have booked before"/>
+	<design:attribute name="bookerColour" label="'Booker' Banner Colour" description="The colour of the banner presented for clients who have never booked but have enquired previously. Accepts literal, hex and rgb colours."/>
+</design:component>

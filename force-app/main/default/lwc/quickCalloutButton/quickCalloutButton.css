@@ -1,0 +1,13 @@
+.buttonHeight{
+    min-height: 40px;
+}
+.white-icon{
+    --lwc-colorTextIconDefault: white;
+}
+.spinner{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 80px;
+    background-color: none;
+}

@@ -1,0 +1,45 @@
+<aura:component controller="EmpCommunity_ParkingController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="space" type="EmpCommunity_ParkingController.ParkingWrapper"/>
+    <aura:attribute name="spaceId" type="String"/>
+    <aura:attribute name="userList" type="EmpCommunity_ParkingController.UserWrapper[]"/>
+    <aura:attribute name="userRecord" type="User"/>
+    <aura:attribute name="currentUser" type="User"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <style type="text/css">
+    	.availableText {
+        	color: yellowgreen;
+        	font-weight:bold;
+        }
+        .lightGreenText {
+        	color: lightGreen;
+        }
+    </style>
+
+	<aura:renderIf isTrue="{!null != v.space}">
+        <strong><ui:outputText class="{!v.currentUser.Id == v.space.parkingRecord.Current_User__r.Id ? 'lightGreenText' : ''}" value="{!v.space.spaceNumber}"/></strong>
+        &nbsp;-&nbsp;
+        <aura:renderIf isTrue="{!!v.space.isAvailable}">
+            <ui:outputText class="{!v.currentUser.Id == v.space.parkingRecord.Current_User__r.Id ? 'lightGreenText' : ''}" value="{!v.space.parkingRecord.Current_User__r.Name}"/>
+        </aura:renderIf>
+        <aura:renderIf isTrue="{!v.space.isAvailable}">
+            <aura:renderIf isTrue="{!v.userRecord.UserRole.Name == 'IT' || v.userRecord.UserRole.Name == 'HR'}">
+	            <ui:button label="Assign" press="{!c.assignSpace}"/>
+            <aura:set attribute="else">
+                <span class="availableText"><ui:outputText value="Available"/></span>    
+            </aura:set>
+            </aura:renderIf>
+        </aura:renderIf>
+    </aura:renderIf>
+    <aura:renderIf isTrue="{!!v.space}">
+    	<strong>{!v.spaceId}</strong>
+        &nbsp;-&nbsp;
+        <!-- <ui:outputText value="No Record"/> -->
+    </aura:renderIf>
+	<!-- POP OUT FORM -->
+    <div id="{!'popout' + v.space.spaceNumber}" aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open slds-docked-composer-modal slds-hide">
+        <c:EmpCommunity_AssignPopout space="{!v.space}" userList="{!v.userList}"/>
+    </div>
+    <div id="popoutBackground" class="slds-backdrop slds-backdrop--open slds-hide"></div>
+    <!-- /POP OUT FORM --> 
+    
+</aura:component>

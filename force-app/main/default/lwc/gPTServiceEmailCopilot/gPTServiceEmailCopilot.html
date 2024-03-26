@@ -1,0 +1,127 @@
+<template>
+    <div class="slds-card">
+       <header class="slds-card__header">
+          <span>
+             <span class="slds-p-bottom_xx-small slds-p-left_x-small" style="vertical-align: bottom;"><lightning-icon class="primary-icon" icon-name="custom:custom105" size="small"></lightning-icon></span>
+             <span class="slds-text-heading_medium slds-p-left_small slds-p-top_x-small" style="font-size:16px;"><b>Golfbreaks Email Copilot</b></span>
+          </span>
+       </header>
+       <div class="slds-card__body">
+          <div if:true={showSpinner} class="slds-spinner_container">
+             <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+          </div>
+          <div class="slds-p-around_medium">
+             <div class="slds-grid">
+                <div class="slds-col slds-size_9-of-12">
+                   <lightning-combobox
+                      class=""
+                      label="Email Selection"
+                      value={selectedContentOptionId}
+                      options={contentSelectOptions}
+                      onchange={handleChangeContent}
+                      ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <div class="slds-button-group slds-align_absolute-center" style="padding-top:22px;" role="group">
+                        <div>
+                            <lightning-button-icon class="slds-button slds-button_icon" icon-name="utility:refresh" tooltip="Refresh" onclick={startOver}></lightning-button-icon>
+                        </div>
+                        <div class="slds-p-left_xxx-small">
+                            <lightning-button-icon class="slds-button slds-button" icon-name="utility:copy_to_clipboard" tooltip="Copy to clipboard" onclick={handleCopyToClipboard}></lightning-button-icon>
+                        </div>
+                        
+                        <div class="slds-p-left_x-small">
+                            <lightning-button-icon variant={viewContentButtonVariant} class="slds-button slds-button_icon slds-button_first slds-button_icon-border-filled preview-button"  icon-name="utility:preview" tooltip="View original email" onclick={handleViewContentSelection}></lightning-button-icon>
+                        </div>
+                        <div>
+                            <lightning-button-icon variant={viewAIButtonVariant} class="slds-button slds-button_icon slds-button_last" icon-name="utility:sparkles" tooltip="View AI response" onclick={handleViewAIResponseSelection}></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <template if:true={isViewingContent}>
+                <div class="slds-grid slds-gutters">
+                   <div class="slds-col slds-card slds-p-around_medium">
+                      <div style="border: 1px solid black; border-radius:5px; height:360px" class="slds-scrollable">
+                        <div style="padding:10px">
+                          <lightning-formatted-rich-text
+                            class="slds-m-bottom_small custom-textarea"
+                            value={focusContentHTML}
+                            read-only="true"
+                            ></lightning-formatted-rich-text>
+                          </div>
+                      </div>
+                   </div>
+                </div>
+             </template>
+             <template if:false={isViewingContent}>
+                <div class="slds-grid slds-gutters slds-p-top_medium">
+                   <div class="slds-col">
+                      <!--<lightning-textarea
+                         variant="label-hidden"
+                         class="slds-m-bottom_small custom-textarea gpt-text-area"
+                         label="AI Message"
+                         value={gptOutput}
+                         onchange={handleAgentEdit}
+                         ></lightning-textarea>-->
+                        <textarea id="horizontal-input-id-02" onchange={handleAgentEdit} class="slds-scrollable slds-m-bottom_small custom-textarea gpt-text-area">{gptOutput}</textarea>
+                   </div>
+                </div>
+                <div class="slds-grid slds-wrap">
+                  <div class="slds-col slds-size_12-of-12">
+                     <template for:each={promptOptions} for:item="prompt">
+                        <lightning-badge
+                           key={prompt.value}
+                           label={prompt.label}
+                           variant='brand'
+                           onclick={handlePromptSelection}
+                           value={prompt.value} 
+                           class="slds-m-around_xx-small default prompt-badge"
+                           title={prompt.description}
+                           ></lightning-badge>
+                     </template>
+                  </div>
+               </div>
+               <div if:true={isPromptSelected}>
+                  <div class="slds-grid slds-wrap slds-p-top_small">
+                     <div class="slds-col slds-size_12-of-12">
+                        <template for:each={subPromptOptions} for:item="subPrompt">
+                           <lightning-badge
+                              key={subPrompt.value}
+                              label={subPrompt.label}
+                              variant='brand'
+                              onclick={handleSubPromptSelection}
+                              value={subPrompt.value}
+                              class="slds-m-around_xx-small default prompt-badge"
+                              title={subPrompt.description}
+                              ></lightning-badge>
+                        </template>
+                     </div>
+                  </div>
+               </div>
+               <div class="slds-p-top_medium">Additional Direction:</div>
+               <div class="slds-grid slds-box additional-direction-box">
+                  <div class="slds-col slds-size_11-of-12" onkeypress={handleEnter}>
+                     <lightning-textarea
+                        class="textarea-input"
+                        label=""
+                        variant="label-hidden"
+                        value={textareaInput}
+                        onchange={handleTextareaInputChange}
+                        ></lightning-textarea>
+                  </div>
+                  <div class="slds-col slds-size_1-of-12">
+                     <lightning-button-icon
+                        class="slds-p-left_xx-small"
+                        icon-name="utility:send"
+                        title="Submit"
+                        variant="bare"
+                        onclick={submitAdditionalInstructions}
+                        ></lightning-button-icon>
+                  </div>
+               </div>
+             </template>
+          </div>
+       </div>
+    </div>
+  </template>

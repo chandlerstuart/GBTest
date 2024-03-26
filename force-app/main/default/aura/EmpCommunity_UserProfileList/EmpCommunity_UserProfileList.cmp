@@ -1,0 +1,97 @@
+<aura:component controller="EmpCommunity_WhosWhoController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <style type="text/css">
+    img.profilePic {
+    	cursor: pointer; 
+	}
+    span.filterLetter {
+    	text-decoration:underline;
+        cursor: pointer;
+    }
+    </style>
+    <aura:attribute name="uList" type="EmpCommunity_WhosWhoController.UserWrapper[]"/>
+    <aura:attribute name="originalUList" type="EmpCommunity_WhosWhoController.UserWrapper[]"/>
+    <aura:attribute name="managerList" type="Map"/>
+    <aura:attribute name="roleList" type="Map"/>
+    <aura:attribute name="allPages" type="Map"/>
+    <aura:attribute name="nextToken" type="string"/>
+    <aura:attribute name="prevToken" type="string"/>
+    <aura:attribute name="showNextPrev" type="boolean" default="true"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <center>
+        <div id="spinner" class="slds-modal slds-fade-in-open " aria-hidden="false" role="dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around--medium" style = "box-shadow: 0px 2px 6px rgba(0,0,0,0.7);">
+                    <div class="slds-spinner--large">
+                        <img src="{!$Resource.LoadingSpinner}" alt="Loading..." />
+                    </div>
+                    <ui:outputText class="noRecordsFound" value="Loading..."/>
+                </div>
+            </div>
+        </div>
+    </center>
+    <!-- SEARCH FORM -->
+	<form class="slds-form--inline">
+        <div class="slds-form-element">
+          <div class="slds-form-element__control">
+            <ui:inputText aura:id="searchInput" class="slds-input" placeholder="Search people..."/>
+          </div>
+        </div>
+	  	<div class="slds-form-element">
+            <ui:button class="slds-button slds-button--brand" label="Search" press="{!c.doSearch}"/>
+            &nbsp;
+            <ui:button class="slds-button slds-button--brand" label="Clear" press="{!c.doClear}"/>
+		</div>
+        <br/><br/>
+        <div class="slds-form-element">
+    		<ui:inputSelect aura:id="selectManager" change="{!c.onManagerChange}">
+                <ui:inputSelectOption text="ALL" label="-- Filter on manager --"/>
+        		<aura:iteration items="{!v.managerList}" var="mgr">
+             		<ui:inputSelectOption text="{!mgr}" label="{!mgr}"/>
+        		</aura:iteration>
+    		</ui:inputSelect>
+        	&nbsp;&nbsp;
+            <ui:inputSelect aura:id="selectRole" change="{!c.onRoleChange}">
+                <ui:inputSelectOption text="ALL" label="-- Filter on role --"/>
+        		<aura:iteration items="{!v.roleList}" var="role">
+             		<ui:inputSelectOption text="{!role}" label="{!role}"/>
+        		</aura:iteration>
+    		</ui:inputSelect>
+        </div>
+    </form>
+    
+    <br/>
+    <div id="errorDiv"></div>
+    <span class="slds-text-body--small">Hover over photo to learn more</span>
+    
+	<table style="table-layout:fixed;" class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        	<tr>
+            	<th></th>
+                <th>Name</th>
+                <th>Job Title</th>
+                <th>Phone</th>
+                <th>Email</th>                
+                <th>Manager</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+        <aura:iteration items="{!v.uList}" var="u">
+            <c:EmpCommunity_UserProfile theUser="{!u}" showDetails="{!u.showDetails}"/>
+        </aura:iteration>    
+        </tbody>
+        <!-- Next & Previous buttons -->
+    </table>
+    <br/>
+    <aura:renderIf isTrue="{!v.showNextPrev == true}">
+    <table width="100%">
+    	<tr>
+        	<td style="text-align:center;">
+                <ui:button press="{!c.getPrev}" label="Prev"/>
+                &nbsp;&nbsp;
+                <ui:button press="{!c.getNext}" label="Next"/>
+            </td>
+        </tr>
+    </table>
+    </aura:renderIf>
+</aura:component>

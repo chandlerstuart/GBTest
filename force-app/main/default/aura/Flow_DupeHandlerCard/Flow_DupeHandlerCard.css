@@ -1,0 +1,13 @@
+.THIS .buttonStyle{
+    width:100%;
+    height:100%;
+}
+
+.THIS .pointer{
+    cursor: pointer;
+}
+
+.THIS .cardStyle{
+    border:var(--lwc-borderWidthThin,1px) solid var(--lwc-cardColorBorder,rgb(221, 219, 218)); 
+    box-shadow: var(--lwc-cardShadow,0 2px 2px 0 rgba(0, 0, 0, 0.10));
+}

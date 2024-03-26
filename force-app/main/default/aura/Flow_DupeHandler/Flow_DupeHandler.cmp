@@ -1,0 +1,118 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="Flow_DupeHandlerController">
+    
+    <aura:attribute type="String" name="dupeRecordIds" description="The Ids of the records that will be displayed for comparison with the Input Fields"/>
+    <aura:attribute type="String" name="dupeRecordCardFields" description="A comma separated list of Field Names for displaying in the dupe record layout"/>
+    <aura:attribute type="String" name="dupeRecordCardSLDSIcon" description="The SLDS Icon to display on the Duplicate Record Layout" default="standard:person_account"/>
+    <aura:attribute type="String" name="dupeRecordObjectNameField" description="The API name of the Name field for the specified Object" default="Name"/>
+    <aura:attribute type="String" name="dupeRecordSObjectType" description="The SObjectType of the Duplicate Records" default="Account"/>
+    <aura:attribute type="String[]" name="fieldList"/>
+    <aura:attribute type="String" name="buttonText" default="Not a match - Create new client"/>
+    <aura:attribute type="String" name="dupeWarningMessage" default="We found potential duplicates. Please select correct account or “Not a match” to continue."/>
+    <aura:attribute type="Flow_DupeHandlerController.ObjectWrapper[]" name="duplicateRecords"/>
+    <aura:attribute type="String" name="errorMessage"/>
+    <aura:attribute type="Boolean" name="showDuplicates" default="false"/>
+    <aura:attribute type="Boolean" name="showCompare" default="false"/>
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}"/>
+    <aura:attribute type="Boolean" name="noMatch" default="false"/> 
+    <aura:attribute type="String" name="dupeRecordCompareFields"/>
+    <aura:attribute type="Object[]" name="fieldCompareData"/> 
+    <aura:handler name="RecordSelected" event="c:Flow_DupeHandlerEvent" action="{!c.handleRecordSelection}"/> 
+    <!--Empty Map - Workaround for known SF Bug (cannot create Map in controller)-->
+    <aura:attribute type="Map" name="emptyMap" default="{}"/>
+    <aura:attribute type="Integer" name="largeDeviceSize" default="4"/>
+    <aura:attribute type="Integer" name="mediumDeviceSize" default="6"/>
+    <aura:attribute type="Integer" name="smallDeviceSize" default="12"/>
+    <aura:attribute type="Integer" name="size" default="12"/>
+    <aura:attribute type="String" name="selectedDupeId"/>
+    <aura:attribute type="Boolean" name="showNoMatchButton" default="true"/>
+    <aura:attribute type="Boolean" name="disableNoMatchButton" default="false"/>
+    
+    <!-- Design Attributes (Input Values) -->
+    <aura:attribute type="String" name="compareField1Value"/>
+    <aura:attribute type="String" name="compareField1APIName"/>
+    
+    <aura:attribute type="String" name="compareField2Value"/>
+    <aura:attribute type="String" name="compareField2APIName"/>
+    
+    <aura:attribute type="String" name="compareField3Value"/>
+    <aura:attribute type="String" name="compareField3APIName"/>
+    
+    <aura:attribute type="String" name="compareField4Value"/>
+    <aura:attribute type="String" name="compareField4APIName"/>
+    
+    <aura:attribute type="String" name="compareField5Value"/>
+    <aura:attribute type="String" name="compareField5APIName"/>
+    
+    <aura:attribute type="String" name="compareField6Value"/>
+    <aura:attribute type="String" name="compareField6APIName"/>
+    
+    <aura:attribute type="String" name="compareField7Value"/>
+    <aura:attribute type="String" name="compareField7APIName"/>
+    
+    <aura:attribute type="String" name="compareField8Value"/>
+    <aura:attribute type="String" name="compareField8APIName"/>
+    
+    <aura:attribute type="String" name="compareField9Value"/>
+    <aura:attribute type="String" name="compareField9APIName"/>
+    
+    <aura:attribute type="String" name="compareField10Value"/>
+    <aura:attribute type="String" name="compareField10APIName"/>
+    
+    
+    
+    <aura:if isTrue="{!not(empty(v.errorMessage))}">
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                <lightning:icon iconName="utility:error" class="whiteIcon" size="small"/>
+            </span>
+            <h2>{!v.errorMessage}</h2>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showDuplicates}">
+        <div class="slds-p-horizontal_small">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                <span class="slds-assistive-text">warning</span>
+                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                    <lightning:icon iconName="utility:warning" size="small"/>
+                </span>
+                <b><h2 class="slds-text-heading_small">{!v.dupeWarningMessage}</h2></b> 
+            </div>
+        </div>
+        <aura:if isTrue="{!v.showNoMatchButton}">
+            <div class="slds-p-around_small">
+                <lightning:button class="slds-size--1-of-1" onclick="{!c.handleNoMatchSelect}" disabled="{!v.disableNoMatchButton}">{!v.buttonText}</lightning:button>
+            </div>
+        </aura:if>
+        <lightning:layout multipleRows="true">
+            <aura:iteration items="{!v.duplicateRecords}" var="dr">
+                <c:Flow_DupeHandlerCard record="{!dr}" 
+                                        SLDSIcon="{!v.dupeRecordCardSLDSIcon}" 
+                                        largeDeviceSize="{!v.largeDeviceSize}"
+                                        mediumDeviceSize="{!v.mediumDeviceSize}"
+                                        smallDeviceSize="{!v.smallDeviceSize}"
+                                        size="{!v.size}"/>
+           
+            </aura:iteration>
+        </lightning:layout>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showCompare}">
+        <!--Iterate through compare components -->
+        <lightning:layoutItem size="12" smallDeviceSize="12" mediumDeviceSize="12" largeDeviceSize="12" padding="around-small">
+            <lightning:card variant="Narrow" title="Confirm the correct details" iconName="utility:cases" class="greenIcon">
+                <div class="slds-p-bottom_small slds-p-top_small">
+                    <p class="slds-p-horizontal_small slds-p-bottom_large">
+                        <aura:iteration items="{!v.fieldCompareData}" var="fcd">
+                            <c:Flow_DupeHandlerCompare compareData="{!fcd}"/>
+                        </aura:iteration>
+                    </p>
+                    <lightning:button class="slds-align_absolute-center saveButton" label="Save and Continue" onclick="{!c.saveChanges}"/>
+                </div>
+            </lightning:card>
+        </lightning:layoutItem>
+    </aura:if>
+    
+    
+</aura:component>

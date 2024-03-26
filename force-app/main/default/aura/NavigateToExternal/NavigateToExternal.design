@@ -1,0 +1,9 @@
+<design:component >
+    <design:attribute label="Custom Label Name" name="customLabelURL" description="The name of the custom label storing the base/full URL. The button will only appear if the Custom Label OR Explicit URL has been specified"/>
+    <design:attribute label="Explicit URL" name="explicitURL" description="The base URL or full URL. This value is used if no Custom Label is specified. The button will only appear if the Custom Label OR Explicit URL has been specified "/>
+    <design:attribute label="RAW URL" name="rawURL" description="The raw URL refers to the part of the URL following the domain information. This is an optional parameter than can be used in conjunction with an explicit or custom label 'base' url"/>
+    <design:attribute label="Field API Name" name="fieldAPIName" description="The name of the field storing the value that will be appended to the url (typically the Id)"/>
+    <design:attribute label="SLDS Icon" name="iconName" description="Specify the name of the SLDS icon in the following format: Icon Type : Icon Name (i.e. standard:opportunity). See https://www.lightningdesignsystem.com/icons/ for full list of available icons "/>
+    <design:attribute label="Button Label" name="label"/>
+    <design:attribute label="Standard External" name="isSTandardURL" description="Click to confirm this is a standard external url (not a url to a local application on the users machine)"/>
+</design:component>

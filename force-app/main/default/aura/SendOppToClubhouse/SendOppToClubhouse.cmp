@@ -1,0 +1,26 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="SendOppToClubhouseController">
+    <!--<aura:attribute name="record" type="Opportunity"/>       
+    <aura:attribute type="String" name="iconName" default="utility:help_center"/>
+    <aura:attribute type="String" name="label" default="Sync Opp to Clubhouse"/>
+    <aura:attribute type="Boolean" name="showButton" default="false"/>
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}"/>
+    <aura:attribute type="String" name="errorMessage"/>
+	<force:recordData recordId="{!v.recordId}" 
+                        fields="GolfbreaksEnquiryId__c"  
+                        targetFields="{!v.record}" 
+                        aura:id="recordData"
+                        recordUpdated="{!c.recordLoaded}"
+                        targetError="{!v.errorMessage}"
+                        mode="VIEW"/> 
+    
+    {!v.errorMessage}
+    <aura:if isTrue="{!v.showButton}">
+            <button class="slds-button slds-button_brand" style="width:100%;height:40px" onclick="{!c.sendOpportunityToClubhouse}">
+                <lightning:icon iconName="{!v.iconName}" size="small" variant="inverse"/>
+                &nbsp;
+                {!v.label}
+            </button>
+        </aura:if>-->
+    
+    COMPONENT DEPRECATED - 03-12-19 - Integration Framework Project
+</aura:component>

@@ -1,0 +1,68 @@
+<aura:component controller="LC07_SalesAgentDesktopController" implements="force:appHostable,flexipage:availableForAllPageTypes">
+    <style type="text/css">
+    	.outLink {
+        	text-decoration:underline;
+        	cursor:pointer;
+        }
+    
+    </style>
+    
+    <aura:attribute name="viewWrapper" type="ListViewWrapper"/>
+    <aura:attribute name="colHeaders" type="String[]"/>
+    <aura:attribute name="objectType" type="String"/>
+    <aura:attribute name="cssClass" type="String"/>
+    <aura:attribute name="viewURL" type="String" default="{!v.viewWrapper.url}"/>
+    <aura:attribute name="isExpanded" type="boolean" default="true"/>
+    <aura:attribute name="filterDate" type="Date"/>
+    
+    <!-- START OF HTML -->
+    <!-- <tr>
+    	<td width="45%">
+        	<label><strong>Select Date</strong></label>
+        	<ui:inputDate value="{!v.filterDate}" displayDatePicker="true"/>
+        </td>
+    
+    </tr> -->
+    
+    <tr>
+        <td class="{!v.cssClass + ' slds-text-body--small'}" colspan="{!v.colHeaders.length}">                      	
+            <div style="font-weight:bold;" >
+                <aura:renderIf isTrue="{!v.viewWrapper.recordCount > 0}">
+                    <aura:renderIf isTrue="{!v.isExpanded}">
+                        <span class="slds-icon_container" onclick="{!c.doExpandCollapse}">
+                    	<c:svgIcon svgPath="/resource/SLDS090/assets/icons/utility-sprite/svg/symbols.svg#down" category="utility" size="small" name="down" />
+                    	</span>
+                    </aura:renderIf>
+                    <aura:renderIf isTrue="{!!v.isExpanded}">
+                        <span class="slds-icon_container" onclick="{!c.doExpandCollapse}">
+                    	<c:svgIcon svgPath="/resource/SLDS090/assets/icons/utility-sprite/svg/symbols.svg#right" category="utility" size="small" name="right" />
+                        </span>
+                    </aura:renderIf>
+                </aura:renderIf>
+                &nbsp;
+                <ui:outputText value="{!v.viewWrapper.label}" class="outLink" click="{!c.openListView}"/>
+            </div>   
+        </td>
+        <td class="resultCol slds-text-body--small">
+            <strong>{!v.viewWrapper.recordCount}</strong>
+        </td>
+    </tr> 
+    <aura:renderIf isTrue="{!v.isExpanded}">
+    
+    <aura:renderIf isTrue="{!v.viewWrapper.recordCount > 0}">
+        <tr class="{!v.cssClass}">
+            <th>&nbsp;</th> <!-- high priority image column -->
+            <aura:iteration items="{!v.colHeaders}" var="ch">
+                <th class="header slds-text-body--small" scope="col">{!ch}</th>  
+            </aura:iteration>    
+        </tr>
+    </aura:renderIf>
+    <aura:iteration items="{!v.viewWrapper.recordWrappers}" var="r">
+        <tr class="{!v.cssClass}">
+            <c:SalesAgentDesktopRecordComponent textClass="{!r.objClass}" rec="{!r.obj}" objectType="{!v.objectType}"/>
+        </tr>
+    </aura:iteration>
+    </aura:renderIf>
+    <!--END OF HTML -->
+    
+</aura:component>

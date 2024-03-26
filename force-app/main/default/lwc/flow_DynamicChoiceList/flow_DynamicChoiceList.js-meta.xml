@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+      <target>lightning__FlowScreen</target> 
+    </targets>
+    <targetConfigs>  
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="fieldLabel" type="String" label="Field Label"/>
+            <property name="placeholder" type="String" label="Placeholder"/>
+
+            <property name="option1Label" type="String" label="Option 1 Label"/>
+            <property name="option1Value" type="String" label="Option 1 Value"/>
+            <property name="option2Label" type="String" label="Option 2 Label"/>
+            <property name="option2Value" type="String" label="Option 2 Value"/>
+            <property name="option3Label" type="String" label="Option 3 Label"/>
+            <property name="option3Value" type="String" label="Option 3 Value"/>
+            <property name="option4Label" type="String" label="Option 4 Label"/>
+            <property name="option4Value" type="String" label="Option 4 Value"/>
+            <property name="option5Label" type="String" label="Option 5 Label"/>
+            <property name="option5Value" type="String" label="Option 5 Value"/>
+
+            <property name="selectedValue" type="String" label="Selected Value"/>
+
+            <property name="isPicklist" type="Boolean" label="Is Picklist" description="Default is Radio Button"/>
+            <property name="isRequired" type="Boolean" label="Is Required" />
+            <property name="displayValues" type="Boolean" label="Display Values" description="Display the values alongside the labels" />
+
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

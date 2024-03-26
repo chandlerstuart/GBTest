@@ -1,0 +1,24 @@
+<template>
+
+    <template if:true={showPicklist}>
+        <lightning-combobox
+            name="dynamic-choice"
+            label={fieldLabel}
+            value={selectedValue}
+            placeholder={placeholder}
+            options={selectOptions}
+            onchange={handleChange}
+            required={isRequired} ></lightning-combobox>
+    </template>
+
+    <template if:true={showRadioButtons}>
+        <lightning-radio-group name="dynamic-choice"
+                          label={fieldLabel}
+                          options={selectOptions}
+                          value={selectedValue}
+                          type="radio"
+                          required={isRequired}
+                          onchange={handleChange}
+                          ></lightning-radio-group>
+    </template>
+</template>

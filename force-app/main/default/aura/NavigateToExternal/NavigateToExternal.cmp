@@ -1,0 +1,42 @@
+<aura:component implements="force:hasRecordId,force:appHostable,flexipage:availableForRecordHome" access="global">
+    <aura:attribute name="record" type="Object"/>       
+    <aura:attribute type="String" name="explicitURL"/>
+    <aura:attribute type="String" name="rawURL"/>
+    <aura:attribute type="String" name="customLabelURL"/>
+    <aura:attribute type="String" name="customLabelValue"/>
+    <aura:attribute type="String" name="fieldAPIName"/>
+    <aura:attribute name="fieldNameList" access="private" type="String[]" default="['Id']" />
+    <aura:attribute type="String" name="fieldValue"/>
+    <aura:attribute type="String" name="iconName" default="utility:retweet"/>
+    <aura:attribute type="String" name="label" default="Click Me"/>
+    <aura:attribute type="Boolean" name="showButton" default="false"/>
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}"/>
+    <aura:attribute type="String" name="errorMessage"/>
+	<aura:attribute type="Boolean" name="isSTandardURL"/>
+
+    <aura:handler name="change" value="{!v.fieldNameList}" action="{!c.reloadRecord}"/>
+    <force:recordData recordId="{!v.recordId}" 
+                        fields="{!v.fieldNameList}"  
+                        targetFields="{!v.record}" 
+                        aura:id="recordData"
+                        recordUpdated="{!c.recordLoaded}"
+                        targetError="{!v.errorMessage}"
+                        mode="VIEW"/> 
+
+    <lightning:navigation aura:id="navigationService"/>
+
+    <div id="containerDiv" aura:id="containerDiv"></div>
+
+    <aura:if isTrue="{!empty(v.errorMessage)}">
+        <aura:if isTrue="{!v.showButton}">
+            <button class="slds-button slds-button_brand" style="width:100%;height:40px" onclick="{!c.navigateToURL}">
+                <lightning:icon iconName="{!v.iconName}" size="small" variant="inverse"/>
+                &nbsp;
+                {!v.label}
+            </button>
+        </aura:if>
+        <aura:set attribute="else">
+                <lightning:formattedText value="{!v.errorMessage}"/>
+        </aura:set>
+    </aura:if>
+</aura:component>

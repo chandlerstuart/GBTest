@@ -1,0 +1,73 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; 
+    align-items: center;
+}
+
+.textarea-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.selected {
+    background-color: #e0e0e0;
+}
+.full-width{
+    width: 100%;
+}
+.custom-textarea{
+    --sds-c-textarea-sizing-min-height: 360px;
+}
+.custom-textarea.slds-textarea{
+    background-color: whitesmoke;
+}
+.button-height{
+    height: 110px;
+}
+.isSelected{
+    font-weight: bold;
+}
+.textarea-input .slds-textarea{
+    border:none !important;
+}
+.slds-textarea .textarea-input {
+    border:none !important;
+}
+.default{
+    cursor: default !important;
+}
+.button-group.slds-align_absolute-center{
+    margin: 0px !important;
+}
+.gpt-text-area{
+    background-color: rgb(251 251 251);
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 360px;
+    width: 100%;
+    padding: 10px;
+}
+.preview-button.slds-button.slds-button_icon{
+    border-radius: 5px 0px 0px 5px;
+}
+.prompt-badge{
+    background-color: rgb(100 180 45);
+    color: white;
+}
+.primary-icon{
+    background-color: rgb(100 180 45);
+}
+.additional-direction-box{
+    background-color:rgb(244 245 246);
+    border-color: black;
+    border-color: gray;
+}

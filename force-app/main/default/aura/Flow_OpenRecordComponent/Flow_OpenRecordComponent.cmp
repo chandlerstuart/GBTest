@@ -1,0 +1,18 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global">
+    <aura:attribute name="openOnPageLoad" type="Boolean" access="global" default="false"/>
+    <aura:attribute name="recordId" type="String" access="global" />
+    <aura:attribute name="buttonText" type="String" access="global" default="Open Record"/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    <aura:attribute name="IsCommunityFlow" type="Boolean" default="false"/>
+   
+    <!--Display Button if openOnPageLoadIsFalse-->
+    <aura:if isTrue="{!v.openOnPageLoad==false}">
+        <aura:if isTrue="{!v.recordId != null}">
+            <button class="slds-button slds-button_neutral" onclick="{!c.openTab}">
+                <b>{!v.buttonText}</b>
+            </button>
+        </aura:if>
+    </aura:if>
+    
+</aura:component>

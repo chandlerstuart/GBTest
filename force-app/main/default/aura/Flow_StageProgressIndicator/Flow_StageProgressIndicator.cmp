@@ -1,0 +1,58 @@
+<aura:component implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="currentStage" type="Object"/>
+    <aura:attribute name="activeStages" type="Object[]"/>
+    <!-- Get flow name from the Lightning App Builder -->
+    <aura:attribute name="flowName" type="String"/>
+    <aura:attribute name="ShowBorder" type="Boolean" default="false"/>
+    <aura:attribute name="PathOrBase" type="String" default="base"/>
+    <aura:attribute name="Header" type="String"/>
+    <aura:attribute name="IsModal" type="Boolean"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <aura:if isTrue="{!v.IsModal}">
+        <div style="height: 640px;">
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header" aura:id="modalHeaderId">
+                        {!v.Header}
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <article aura:Id="articleId">
+                            <lightning:progressIndicator aura:id="progressIndicator"
+                                                         currentStep="{!v.currentStage.name}" type="{!v.PathOrBase}"/>
+                            <lightning:flow aura:id="flow" onstatuschange="{!c.statusChange}"/>  
+                        </article>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div> 
+        <aura:set attribute="else">           
+            <article aura:Id="articleId">
+                <aura:if isTrue="{!v.Header != null}">                                
+                    
+                    <div class="slds-page-header slds-theme_default">
+                        <div class="slds-page-header__col-title slds-align_absolute-center">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate ">{!v.Header}</span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>            
+                    </div>
+                    
+                </aura:if>
+                <lightning:progressIndicator aura:id="progressIndicator"
+                                             currentStep="{!v.currentStage.name}" type="{!v.PathOrBase}"/>
+                <lightning:flow aura:id="flow" onstatuschange="{!c.statusChange}"/>  
+            </article>
+            
+        </aura:set>
+    </aura:if>
+    
+    
+    
+</aura:component>

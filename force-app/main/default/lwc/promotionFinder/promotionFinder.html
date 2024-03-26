@@ -1,0 +1,83 @@
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-m-left_medium">
+                <span><lightning-icon icon-name="standard:event" class="primary-icon" size="small"></lightning-icon></span>
+                <span class="promo-heading slds-m-left_small slds-text-heading_medium slds-text-title_bold slds-align-middle">Promotions</span>
+            </div>
+        </div>
+        <c-alert-manager message={errorMessage} show-error={showError}></c-alert-manager>
+
+        <div class="slds-p-horizontal_large slds-p-top_small">
+
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_6-of-12">
+                    <lightning-input type="search" label="Search" value={searchTerm} onchange={handleSearchChange} onkeypress={handleEnter}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <lightning-input type="date" label="Travel Date" value={travelDate} onchange={handleTravelDateChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_2-of-12">
+                    <lightning-input type="number" label="PAX" value={groupSize} onchange={handleGroupSizeChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-12 refresh-button-section">
+                    <lightning-button-icon icon-name="utility:refresh" onclick={refresh}  alternative-text="Settings" title="Settings" ></lightning-button-icon>
+                </div>
+            </div>
+            <template if:true={showSpinner}>
+                <div class="spinner-container">
+                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                </div>
+            </template>
+            <template if:false={showSpinner}>
+                <template if:true={promotions}>
+                    <div class="slds-p-top_large">
+                        <div class="slds-scrollable" style="max-height:17rem;">
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="slds-text-title_caps">Venue</th>
+                                        <th class="slds-text-title_caps">Promotion</th>
+                                        <!--<th class="slds-text-title_caps"></th>-->
+                                    </tr>
+                                </thead> 
+                                <tbody>
+                                    <template for:each={promotions} for:item="promo">
+                                        <tr key={promo.promotion.Id} data-id={promo.promotion.Id} onmouseover={fireFocusedPromoEvent} onmouseout={fireUnfocusedPromoEvent}>
+                                            <td>{promo.promotion.Venue__r.Name}</td>
+                                            <td>
+                                                {promo.promotion.Name}
+                                                <!--<template if:true={promo.isRecommended}><span><lightning-icon class="slds-m-left_x-small is-recommended" icon-name="utility:favorite" size="xx-small" title={isRecommendedTitle}></lightning-icon></span></template>-->
+                                                <div class="tooltip" style="display:inline;">
+                                                    <template if:true={promo.isProductRecommended}><span><lightning-icon  class="slds-m-left_x-small is-recommended-product" icon-name="utility:opportunity" size="xx-small" title="Recommended by the product team."></lightning-icon></span></template>
+                                                    <div class="tooltiptext slds-scrollable detail-box" style="max-height:308px;">
+                                                        Recommended by the product team!
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            
+                                            <!--<td>
+                                                <template if:true={promo.promotionDetails}>
+                                                    <div class="tooltip" style="display:inline;">
+                                                        <lightning-icon icon-name="utility:cases" size="xx-small"></lightning-icon>
+                                                        <div class="tooltiptext slds-scrollable detail-box" style="max-height:308px;">
+                                                            <lightning-formatted-rich-text value={promo.promotionDetails} class="slds-text-body_small"></lightning-formatted-rich-text>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </td>-->
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </template>
+                <template if:true={noPromos}>
+                    <span class="slds-align_absolute-center slds-m-top_small">No relevant promotions found for this trip.</span>
+                </template>
+            </template>
+        </div>
+
+    </lightning-card>
+</template>

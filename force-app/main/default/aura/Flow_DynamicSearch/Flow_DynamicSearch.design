@@ -1,0 +1,9 @@
+<design:component>
+    <design:attribute label="sObjectType" name="sObjectType" description="The API name of the search Object"/>
+    <design:attribute label="SOQL" name="SOQLString" description="Use SOQL to hone in on the data of interest. The 'Select' fields will become the columns and the 'Where' clause will filter the data. Note - Only fields phyically located on the Object will be displayed. However, all related fields can be used in filter criteria"/>
+    <design:attribute label="Limit" name="limitCount" description="The maximum number of results that should be returned by each search"/>
+    <design:attribute label="Search Label" name="label" description="The label above the search bar"/>
+    <design:attribute label="Record Id" name="recordId" description="The Id of the record selected by the user (output)"/>
+    <design:attribute label="Required" name="isRequired" description="If required the user will be blocked from proceeding if a record Id is not specified. Note - Only mark as Required if you are certain a record will be returned by the dynamic search"/>
+	<design:attribute label="Required Error Message" name="isRequiredErrorMessage" description="The message to be displayed to the user if they attempt to proceed through the flow without finding and selecting a record"/>
+</design:component>

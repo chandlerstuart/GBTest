@@ -1,0 +1,20 @@
+.THIS {
+}
+.THIS.container {
+    max-height: 500px;
+    display: flex;
+    width: 100%
+}
+
+.THIS .middle-scroll-y {
+    overflow-y: scroll;
+    height:70rem;
+}
+.THIS .left-scroll-y {
+    overflow-y: scroll;
+    height:70rem;
+}
+.THIS .right-scroll-y {
+    overflow-y: scroll;
+    height:70rem;
+}

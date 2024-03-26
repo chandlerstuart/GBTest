@@ -1,0 +1,34 @@
+<aura:component >
+    <aura:attribute name="oppRecord" type="OppQuoteManagementController.OppWrapper"/>
+
+    <div class="slds-grid slds-wrap slds-grid--pull-padded"> <!-- Start of Grid -->
+    <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--medium"> <!--Start of 3rd Row-->
+        <div class="slds-text-heading--small slds-text-align--left slds-box slds-theme--inverse"> 
+            Opportunity Details 
+        </div>
+    </div>
+    <div class="slds-col--padded slds-size--1-of-1 slds-p-around--small ">   <!-- 1st column-->
+        <div class="slds-col--padded  slds-size--1-of-2 slds-p-around--large ">   
+            <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                <div class="slds-text-heading--label "> 
+                    Opportunity Name: 
+                    <div class="slds-form-element__control slds-box--x-small">
+                        <!--<input onchange="{!c.setOppName}" value="{!v.oppName}" id="text-input-04" 
+                                   class="slds-input" type="text" placeholder="Enter Opportunity Name" /> -->
+                        <ui:inputText class="slds-input" value="{!v.oppRecord.opportunity.Name}"/>
+                    </div>
+                </div>
+                <div class="slds-text-heading--label "> 
+                    Quote Expiry Date: 
+                    <div class="slds-form-element__control slds-box--x-small">
+                        <!--<input onchange="{!c.setOppName}" value="{!v.oppName}" id="text-input-04" 
+                                   class="slds-input" type="text" placeholder="Enter Opportunity Name" /> -->
+                        <ui:inputDate displayDatePicker="true" aura:id="expiryDate" class="slds-input" value="{!v.oppRecord.opportunity.ExpiryDate__c}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+</aura:component>

@@ -1,0 +1,15 @@
+.confirmationButton{
+    min-width:85px;
+    font-weight: bold;
+    --sds-c-button-outline-brand:gainsboro !important;
+    --sds-c-button-text-color:#565555;
+} 
+.slds-notify_container{
+    width:100%;
+}
+.slds-notify{
+    background: #ef645a;
+}
+.light-bulb{
+    --lwc-colorTextIconDefault:white;
+}

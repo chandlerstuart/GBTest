@@ -1,0 +1,13 @@
+.THIS {
+}
+.THIS .whiteIcon svg{
+    fill:white;
+}
+.THIS .slds-box.container{
+    border-color:rgb(201, 201, 201);
+    padding: 3px;
+    width:100%;
+}
+.THIS.slds-notify_alert{
+    padding:none;
+}

@@ -1,0 +1,9 @@
+.THIS {
+}
+.THIS .closeIcon svg{
+    fill:white;
+}
+.THIS .resultButtons{
+    width:100%;
+    border:none;
+}

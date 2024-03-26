@@ -1,0 +1,19 @@
+<template>
+
+    <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+
+    <template if:true={displayMessage}>
+        <c-alert-manager message={displayMessage} type={displayMessageType}></c-alert-manager>
+    </template>
+
+    <iframe
+      src={url}
+      height={height}
+      width={width}
+      referrerpolicy={referrerPolicy}
+      title="iFrame"
+    ></iframe>
+
+  </template>

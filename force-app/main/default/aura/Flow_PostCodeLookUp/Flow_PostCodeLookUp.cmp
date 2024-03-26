@@ -1,0 +1,75 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global">
+    <aura:attribute name="street" type="String" access="global"/>
+    <aura:attribute name="city" type="String" access="global"/>
+    <aura:attribute name="county" type="String" access="global"/>
+    <aura:attribute name="country" type="String" access="global"/>
+    <aura:attribute name="postCode" type="String" access="global"/>
+    <aura:attribute name="searchString" type="String" access="global"/>
+    <aura:attribute name="selectedResultId" type="String" access="global"/>
+    <aura:attribute type="Boolean" name="showModal" default="false"/>
+    <aura:attribute type="Object" name="results"/>
+    <aura:handler name="PostcodeLookupResultSelected" event="c:PostcodeLookupResultSelected" action="{!c.handleSelection}"/>
+    <aura:attribute name="showResults" type="Boolean" default="false"/>
+    <aura:attribute name="editMode" type="Boolean"/>
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    
+    <lightning:input type="search" value="{!v.searchString}" label="Address Search" class="slds-p-bottom_medium" onchange="{!c.startSearch}" onfocus="{!c.toggleModal}"/>
+    <aura:if isTrue="{!v.showModal}">
+        
+        <div style="height: 640px;">
+            <section role="dialog" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.toggleModal}">
+                            <lightning:icon iconName="utility:close" class="closeModal"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium slds-hyphenate">
+                            <lightning:input type="search" value="{!v.searchString}" label="Address Search" class="slds-p-bottom_medium" onchange="{!c.startSearch}" placeholder="Start typing..."/>
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" >
+                        <aura:iteration items="{!v.results}" var="result">
+                            <ul class=" slds-p-bottom_x-small">
+                                <c:Flow_PostCodeLookUpResult text="{!result.Text}" description="{!result.Description}" type="{!result.Type}" id="{!result.Id}"/>
+                            </ul>
+                        </aura:iteration>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        
+        
+        <aura:set attribute="else">
+            <aura:if isTrue="{!v.editMode}">
+                <div class="slds-p-bottom_small">
+                    <lightning:input aura:id="street" id="street" type="text" value="{!v.street}" label="Street"  />
+                    <lightning:input id="city" type="text" value="{!v.city}" label="City" />
+                    <lightning:input id="state" type="text" value="{!v.county}" label="State/County"  />
+                    <lightning:input id="country" type="text" value="{!v.country}" label="Country"  />    
+                    <lightning:input id="postcode" type="text" value="{!v.postCode}" label="PostCode" />
+                </div>
+                <div class="slds-p-bottom_small">
+                    <lightning:button label="Done" onclick="{!c.toggleEdit}"/>
+                    <lightning:button label="Clear All" onclick="{!c.clearAll}"/>        
+                </div>
+                <aura:set attribute="else">
+                    <lightning:formattedAddress
+                                                street="{!v.street}"
+                                                city="{!v.city}"
+                                                country="{!v.country}"
+                                                province="{!v.county}"
+                                                postalCode="{!v.postCode}"
+                                                disabled="true"
+                                                />
+                    <aura:if isTrue="{!or(not(empty(v.street)),not(empty(v.postCode)),not(empty(v.city)),not(empty(v.country)),not(empty(v.county)))}">
+                        <div>
+                            <lightning:button variant="neutral" label="Edit" class="editButton" onclick="{!c.toggleEdit}"/>
+                        </div>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+        </aura:set>
+    </aura:if>
+</aura:component>

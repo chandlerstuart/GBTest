@@ -1,0 +1,21 @@
+.THIS .saveLabelStyle{
+    padding-top: 5px;
+    text-align: center;
+    float: right;
+    width:200px;
+    height: 20px;
+    background-color: #FFE699;
+}
+
+.THIS .saveLabelStyle2{
+    padding-top: 5px;
+    text-align: center;
+    float: right;
+    width:200px;
+    height: 20px;
+    background-color: #E2F0D9;
+}
+
+.THIS .exportPDF{
+    background-color: #76eec6;
+}

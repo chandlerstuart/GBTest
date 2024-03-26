@@ -1,0 +1,122 @@
+<aura:component controller="LC07_SalesAgentDesktopController" implements="force:appHostable,flexipage:availableForAllPageTypes">            
+    <aura:attribute name="rec" type="SObject"/>
+    <aura:attribute name="objectType" type="String"/>
+    <aura:attribute name="recId" type="String" default="{!v.rec.Id}"/>
+    <aura:attribute name="accountRecId" type="String" default="{!v.rec.AccountId}"/>
+    <aura:attribute name="gbEnquiryId" type="String" default="{!v.rec.GolfbreaksEnquiryId__c}"/>
+    <aura:attribute name="textClass" type="String" default="showBlack"/>
+    <aura:registerEvent name="oppUpdateEvent" type="c:SalesAgentDesktopOppUpdateEvent"/>
+    
+    <aura:renderIf isTrue="{!'Lead' == v.objectType}">
+    <td>
+    	&nbsp;    
+    </td>
+    <td>
+        <ui:outputText click="{!c.openRecord}" class="{!v.textClass + ' link slds-truncate slds-text-body--small'}" value="{!v.rec.Name}"/>
+    </td>
+    <td>
+        <ui:outputDate class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Diarydate__c}"/>
+    </td>
+    <td>
+        <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.DiaryDateNote__c}"/>
+    </td>
+    <td>
+        <ui:outputDateTime class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.CallBackDateTime__c}"/>
+    </td>
+    <td>
+        <ui:outputDateTime class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Customer_Call_Back_Date_Time__c}"/>
+    </td>
+    <td>
+        <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Venue__c}"/>
+    </td>
+    <td>
+        <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.TravelGroupSize__c}"/>
+    </td>
+    <td>
+        <ui:outputDate class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.PreferredTravelDate__c}"/>
+    </td>
+    <td>
+        <ui:button class="slds-truncate slds-text-body--small" label="Clubhouse Enquiry" press="{!c.openClubhouseEnquiry}"/>
+    </td>
+    </aura:renderIf>
+    <aura:renderIf isTrue="{!'Opp' == v.objectType}">
+        <td>
+            <aura:if isTrue="{!v.rec.High_Priority__c}">
+			    <lightning:icon iconName="action:priority" size="small" alternativeText="High Priority"/>
+                <aura:set attribute="else">
+                    <ui:outputText click="{!c.setHigh}" class="link slds-truncate slds-text-body--small" value="Set as High"/>    
+                </aura:set>           
+            </aura:if>
+        </td>
+        <td>
+            <ui:outputText click="{!c.openAccountRecord}" class="{!v.textClass + ' link slds-truncate slds-text-body--small'}" value="{!v.rec.Account.Name}"/>
+        </td>
+    	<td>
+            <ui:outputText click="{!c.openRecord}" class="{!v.textClass + ' link slds-truncate slds-text-body--small'}" value="{!v.rec.Name}"/>
+        </td>
+        <td>
+            <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.StageName}"/>
+        </td>
+        <td>
+            <ui:outputDate class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.DiaryDate__c}"/>
+        </td>
+        <td>
+            <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.DiaryDateNote__c}"/>
+        </td>
+        
+        <td>
+            <ui:outputDateTime class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.RequestedCallbacktimedate__c }"/>
+        </td>
+        <td>
+            <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Venue__c}"/>
+        </td>
+        <td>
+            <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.TravelGroupSize__c}"/>
+        </td>
+        <td>
+            <ui:outputDate class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.PreferredTravelDate__c}"/>
+        </td>
+		<td>
+            <ui:button class="{!v.textClass + ' slds-truncate slds-text-body--small'}" label="Clubhouse Enquiry" press="{!c.openClubhouseEnquiry}"/>
+        </td>        
+    </aura:renderIf>
+    <aura:renderIf isTrue="{!'Case' == v.objectType}">
+    	<td>
+        	&nbsp;
+        </td>
+        <td>
+            <ui:outputText click="{!c.openAccountRecord}" class="{!v.textClass + ' link slds-truncate slds-text-body--small'}" value="{!v.rec.Account.Name}"/>
+        </td>
+        <td>
+            <ui:outputText click="{!c.openRecord}" class="{!v.textClass + ' link slds-truncate slds-text-body--small'}" value="{!v.rec.CaseNumber}"/>
+        </td>
+        <td>
+            <ui:outputText class="{!v.textClass + ' link slds-truncate slds-text-body--small'}" value="{!v.rec.Status}"/>
+        </td>
+        <td>
+            <ui:outputDateTime class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.CreatedDate}"/>
+        </td>
+        <td>
+            <ui:outputDate class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Opportunity__r.PreferredTravelDate__c}"/>
+        </td>
+        <aura:renderIf isTrue="{!'Sales Case' == v.rec.RecordType.Name}">
+        	<td>
+                <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Type}"/>
+            </td>
+            <td>
+                <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="{!v.rec.Category__c}"/>
+            </td>
+            <td>
+                <ui:outputText class="{!v.textClass + 'Desc slds-truncate slds-text-body--small'}" value="{!v.rec.Description}"/>
+            </td>    
+        </aura:renderIf>
+        <aura:renderIf isTrue="{!'Sales Case' != v.rec.RecordType.Name}">
+        	<td>
+                <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="ACTIVITY 1"/>
+            </td>
+            <td>
+                <ui:outputText class="{!v.textClass + ' slds-truncate slds-text-body--small'}" value="ACTIVITY 2"/>
+            </td>
+        </aura:renderIf>
+    </aura:renderIf>
+</aura:component>

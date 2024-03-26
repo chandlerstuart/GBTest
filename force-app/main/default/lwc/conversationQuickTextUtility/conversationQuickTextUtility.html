@@ -1,0 +1,49 @@
+<template>
+    <template if:true={showCategoryOptions}>
+        <lightning-combobox
+        class="slds-m-top_small"
+        name="category"
+        label="Quick Text Category"
+        value={selectedCategory}
+        placeholder="Select a Category"
+        options={categoryOptions}
+        onchange={handleCategorySelection} ></lightning-combobox>
+    </template>
+
+    <template if:true={showQuickTextOptions}>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_10-of-12">
+                <span><lightning-combobox class="slds-p-top_x-small"
+                    name="quick-text"
+                    label="Quick Text"
+                    value={selectedQuickText}
+                    placeholder="Select a Quick Text"
+                    options={focusedQuickTextOptions}
+                    onchange={handleQuickTextSelection} ></lightning-combobox></span>
+            </div>
+            <div class="slds-col slds-size_2-of-12" style="margin-top: 32px;">
+                <span><lightning-button label="Add Text" title="" icon-name="utility:add" onclick={addText} class="addTextButton"></lightning-button></span>
+            </div>
+            <!--<div class="slds-col slds-size_2-of-12" style="margin-top: 32px;">
+                <span><lightning-button label="Replace" title="" icon-name="utility:rotate" onclick={replaceText} class="addTextButton"></lightning-button></span>
+            </div>-->
+        </div>
+
+    </template>
+
+    <template if:true={showTextMessagePreview}>
+        <div class="slds-p-top_small" style="margin-top:20px;">
+            <span class="slds-align_absolute-center"><lightning-formatted-text class="slds-box slds-theme_shade" value={selectedQuickText} ></lightning-formatted-text></span>
+        </div>
+    </template>
+
+    <div class="slds-p-top_small">
+        <lightning-textarea name="mainMessage" required="true" value={message} onchange={handleChange} label="Message" placeholder="enter you message here..."></lightning-textarea>
+    </div>
+
+
+
+
+
+
+</template>

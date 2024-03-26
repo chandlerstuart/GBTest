@@ -1,0 +1,57 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="OppQuoteManagementController">
+    <aura:attribute name="vfOppId" type="String"/>
+    <aura:attribute name="oppId" type="String" default="{!v.vfOppId}"/>
+    <aura:attribute name="oppRecord" type="OppQuoteManagementController.OppWrapper"/>
+    <aura:attribute name="quotes" type="OppQuoteManagementController.QuoteWrapper[]"/>
+    <aura:attribute name="showPreviewPrompt" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+   
+    <div class="slds">
+        <!-- <aura:if isTrue="{! !v.convertResult}"> -->
+            <div class="slds-page-header">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        
+                        <div class="slds-grid">
+                            <div class="slds-grid slds-type-focus slds-no-space ">
+                                <h1 class="slds-text-heading -large slds-truncate" title="Lead Information" >
+                                    Opportunity and Quote Information
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        	<div aura:id="errorDiv"></div>
+            <!-- Opportunity Information -->
+	        <c:OppInformation oppRecord="{!v.oppRecord}"/>
+	        <!-- Quote Information -->
+	        <c:OppQuoteInformation quotes="{!v.quotes}"/>
+        	
+        	<!-- Button Panel -->
+            <div class="slds-col--padded slds-p-around--xx-large"> <!-- Start of 3rd Row -->
+                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-center">
+                    <button onclick="{!c.doSave}" class="slds-button slds-button--brand slds-theme--inverse">Save &amp; Send</button>
+                </div>
+            </div>
+
+        	<center>
+            <div id="spinner" class="slds-modal slds-fade-in-open slds-hide" aria-hidden="false" role="dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__content slds-p-around--medium" style = "box-shadow: 0px 2px 6px rgba(0,0,0,0.7);">
+                        <div class="slds-spinner--large">
+                            <img src="/resource/slds090/assets/images/spinners/slds_spinner.gif" alt="Loading..." />
+                        </div>
+                        <ui:outputText class="noRecordsFound" value="Saving..."/>
+                    </div>
+                </div>
+            </div>
+        </center>
+        
+        	<!-- PREVIEW PANEL -->
+        	<!-- <c:Portal_QuotesLiteComparisonComponent opptyRecordId="{!v.oppId}"/> -->
+    </div>
+    
+</aura:component>

@@ -1,0 +1,63 @@
+.refresh-button-section{
+    margin-top: 20px;
+}
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+/* Tooltip text */
+.tooltip .tooltiptext {
+    
+    visibility: hidden;
+    background-color: white;
+    text-align: center;
+    border-radius: 6px;
+    /*width:30rem;*/
+    /*margin-left: -29rem;*/
+    margin-top: 1px;
+    
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1000;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.spinner-container {
+    position: relative; 
+    max-height: 50px; 
+    text-align: center; 
+    margin: auto;
+}
+
+.primary-icon.slds-icon_container{
+    background-color: rgb(100 180 45);
+}
+.promo-heading{
+    font-size: 18px;
+}
+.detail-box{
+    border: 1px solid rgb(100 180 45);
+}
+.slds-table_col-bordered td{
+    border-left: 0px;
+}
+.slds-table_bordered td{
+    border-top: 0px;
+}
+.is-recommended{
+    --sds-c-icon-color-foreground-default: rgb(235, 192, 20);
+    --sds-c-icon-color-background: transparent;
+}
+.is-recommended-product{
+    --sds-c-icon-color-foreground-default: rgb(100 180 45);
+    --sds-c-icon-color-background: transparent;
+}
+.slds-table td {
+    white-space: normal;
+    word-wrap: break-word;
+}

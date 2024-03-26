@@ -1,0 +1,17 @@
+.THIS {
+}
+.x-small.THIS  > div > .slds-textarea {
+    height:50px;
+}
+.small.THIS  > div > .slds-textarea {
+    height:100px;
+}
+.medium.THIS  > div > .slds-textarea {
+    height:250px;
+}
+.large.THIS  > div > .slds-textarea {
+    height:350px;
+}
+.x-large.THIS  > div > .slds-textarea {
+    height:550px;
+}

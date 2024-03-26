@@ -1,0 +1,34 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="ActiveConversationController">
+    <!-- Add your Aura attributes here if needed -->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="activeConversationId" type="String" />
+    <aura:attribute name="conversationLookupFieldName" type="String"/>
+    <aura:attribute name="activeConversation" type="Conversation__c" />
+    <aura:attribute name="canvasAppDeveloperName" type="String" default="GXP_Message_Center"/>
+    <aura:attribute name="error" type="String" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <lightning:card title="Active Conversation">
+        <aura:set attribute="actions">
+            <aura:if isTrue="{!not(empty(v.activeConversationId))}">
+                <lightning:button label="View Conversation" onclick="{!c.openConversation}"/>
+                <lightning:button label="Close Conversation" onclick="{!c.closeConversation}"/>
+            </aura:if>
+        </aura:set>
+        <p class="slds-p-horizontal_small">
+            <aura:if isTrue="{!not(empty(v.error))}">
+                <div class="slds-text-color_error">{!v.error}</div>
+            </aura:if>
+            <aura:if isTrue="{!not(empty(v.activeConversationId))}">
+                <!-- Display active conversation details here -->
+                <c:GXPMessengerCanvasCMP recordId="{!v.activeConversationId}" developerName="{!v.canvasAppDeveloperName}"/>
+                <p>Active Conversation Id: {!v.activeConversationId}</p>
+            </aura:if>
+            <aura:if isTrue="{!and(empty(v.activeConversationId), empty(v.error))}">
+                <p>No Active Conversations</p>
+            </aura:if>
+        </p>
+    </lightning:card>
+    
+</aura:component>

@@ -1,0 +1,107 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="Flow_DynamicSearchController">
+    <aura:attribute type="String" name="sObjectType" default="Account"/> <!-- admin input-->
+    <aura:attribute type="String" name="searchString"/> <!--user input-->
+    <aura:attribute type="String" name="SOQLString" default="Select Id, Name, PersonEmail From Account Where RecordType.Name = 'Client'"/> <!-- admin input-->
+    <aura:attribute type="Integer" name="limitCount" default="50"/> <!--admin input-->
+    <aura:attribute type="Object" name="data"/>
+    <aura:attribute type="Object" name="fieldNames"/> 
+    <aura:attribute name="issearching"    type="Boolean" default="false"/> 
+    <aura:attribute name="label" type="String" default="Search..."/> <!-- admin input-->
+    <aura:attribute name="errorMessage" type="String"/> 
+    <aura:attribute name="getLabels" type="Boolean" default="true"/>
+    <aura:attribute name="showModal" type="Boolean" default="false"/> 
+    <aura:attribute name="showPrompt" type="Boolean" default="false"/> 
+    <aura:attribute name="searchAttempted" type="Boolean" default="false"/>
+    <aura:attribute name="recordId" type="String"/><!--output--> 
+    
+    <aura:attribute name="isRequired" type="Boolean"/><!-- admin input-->
+    <aura:attribute name="isRequiredErrorMessage" type="String"/><!-- admin input-->
+	
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}"/>
+	    
+    <!--Validation attribute-->
+    <aura:attribute name="validate" type="Aura.Action"/>
+    
+    <aura:if isTrue="{!not(empty(v.errorMessage))}">
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                <lightning:icon iconName="utility:error" size="medium" class="whiteFill"/>
+            </span>
+            <h2>{!v.errorMessage}</h2>
+        </div>
+        
+        <aura:set attribute="else">
+            <div onkeyup="{! c.search }">
+                <lightning:input
+                                 aura:id="enter-search"
+                                 name="enter-search"
+                                 label="{!v.label}"
+                                 isLoading="{! v.issearching }"
+                                 type="search"
+                                 class="slds-p-bottom_small"
+                                 value="{!v.searchString}"
+                                 onfocus="{!c.toggleModal}"
+                                 onkeyup="{! c.search }"
+                                 onchange="{!c.handleChange}"
+                                 required="{!v.isRequired}"
+                                 />
+            </div>
+            <aura:if isTrue="{!not(empty(v.recordId))}">
+                <lightning:formattedText value="Record Selected"/>
+                <lightning:icon iconName="utility:success" size="x-small" class="successIcon slds-p-horizontal_x-small"/>
+                <lightning:button variant="neutral" label="Clear" onclick="{!c.clear}" class="clearButton"/>
+            </aura:if>
+            <aura:if isTrue="{!v.showModal}">
+                
+                <div style="height: 640px;">
+                    <section role="dialog" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container" style="width:100%;">
+                            <header class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.toggleModal}">
+                                    <lightning:icon iconName="utility:close" class="closeModal"/>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading_medium slds-hyphenate">
+                                    <div onkeyup="{! c.search }">
+                                        <lightning:input
+                                                         aura:id="enter-search"
+                                                         name="enter-search"
+                                                         label="{!v.label}"
+                                                         isLoading="{! v.issearching }"
+                                                         type="search"
+                                                         class="slds-p-bottom_small"
+                                                         value="{!v.searchString}"
+                                                         placeholder="Start typing..."
+                                                         onkeyup="{! c.search }"
+                                                         onchange="{!c.handleChange}"
+                                                         />
+                                    </div>
+                                </h2>
+                                <aura:if isTrue="{!v.showPrompt}">
+                                    <lightning:formattedText value="Press 'Enter' to search..."/>
+                                </aura:if>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" >
+                                <aura:if isTrue="{!not(empty(v.data))}">
+                                    <lightning:datatable data="{! v.data }"
+                                                         columns="{! v.fieldNames }"
+                                                         keyField="id"
+                                                         onrowaction="{! c.handleRowSelection }"
+                                                         hideCheckboxColumn="true"/>
+                                    <aura:set attribute="else">
+                                        <aura:if isTrue="{!v.searchAttempted}">
+                                            <lightning:formattedText value="No results found..." class="slds-align_absolute-center"/>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+                
+            </aura:if>
+        </aura:set>
+    </aura:if>
+</aura:component>

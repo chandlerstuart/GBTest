@@ -1,0 +1,33 @@
+<template>
+    <template if:true={showButton}>
+        <template if:true={showSpinner}>
+            <div class="spinner slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading" class="" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <template if:false={showSpinner}>
+            <button type="submit" label={buttonLabel} class="slds-button slds-button_brand slds-button_stretch buttonHeight" onclick={submitAction}>
+                <lightning-icon class="white-icon slds-p-right_x-small" size={iconSize} icon-name={sldsIconName}></lightning-icon>
+                {buttonLabel}
+            </button>
+        </template>
+        <template if:true={showError}>
+            <div class="slds-p-top_small">
+                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                        <lightning-icon icon-name="utility:warning" title="warning" size="small"></lightning-icon>
+                    </span>
+                    <h2>{runtimeError}
+                    </h2>
+                    <div class="slds-notify__close">
+                        <button class="slds-button slds-button_icon slds-button_icon-small" onclick={clearError} title="Close">
+                            <lightning-icon icon-name="utility:close" title="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </template>
+</template>

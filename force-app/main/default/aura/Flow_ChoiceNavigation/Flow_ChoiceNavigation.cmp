@@ -1,0 +1,20 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" >
+    <aura:attribute name="button1Label" type="String"/>
+    <aura:attribute name="button2Label" type="String"/>
+    <aura:attribute name="button3Label" type="String"/>
+    <aura:attribute name="button1Style" type="String" default="neutral"/>
+    <aura:attribute name="button2Style" type="String" default="neutral"/>
+    <aura:attribute name="button3Style" type="String" default="neutral"/>
+    <aura:handler value="{!this}" action="{!c.doInit}" name="init"/>
+    <aura:attribute name="position" type="String" default="left"/>
+    <aura:attribute name="buttons" type="Aura.Component[]"/>
+    
+    
+    <!-- Pass the value of the selected option back to the flow -->
+    <aura:attribute name="value" type="String" />
+ 
+    <div aura:id="buttonDiv" class="slds-p-top_large slds-p-bottom_large">
+		{!v.buttons}
+    </div>
+
+</aura:component>

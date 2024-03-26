@@ -1,0 +1,8 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global">
+    <aura:attribute type="String" name="successMessage"/>
+    <aura:attribute type="String" name="errorMessage"/>
+    <aura:attribute type="Boolean" name="isSuccess" default="false"/>
+    <aura:attribute type="String" name="omniStatusId"/>
+    <lightning:omniToolkitAPI aura:id="omniToolkit" />
+    <aura:handler value="{!this}" action="{!c.onInit}" name="init"/>
+</aura:component>

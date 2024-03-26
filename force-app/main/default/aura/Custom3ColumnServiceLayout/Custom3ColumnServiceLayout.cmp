@@ -1,0 +1,33 @@
+<aura:component implements="lightning:recordHomeTemplate" description="One main column with 2 smaller columns either side.">
+    <aura:attribute name="header" type="Aura.Component[]" />
+    <aura:attribute name="left" type="Aura.Component[]" />
+    <aura:attribute name="middle" type="Aura.Component[]" />
+    <aura:attribute name="right" type="Aura.Component[]" />
+
+    <div>
+        <!-- Full-width header -->
+        <lightning:layout class="container">
+            <lightning:layoutItem size="12" flexibility="grow" padding="horizontal-small">
+                {!v.header}
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <!-- Three-column body -->
+        <lightning:layout>
+            <!-- Left column -->
+            <lightning:layoutItem size="3" flexibility="grow" class="left-scroll-y" padding="around-small">
+                {!v.left}
+            </lightning:layoutItem>
+
+            <!-- Middle column (larger) -->
+            <lightning:layoutItem size="6" flexibility="grow" class="middle-scroll-y" >
+                {!v.middle}
+            </lightning:layoutItem>
+
+            <!-- Right column -->
+            <lightning:layoutItem size="3" flexibility="grow" class="right-scroll-y" padding="around-small">
+                {!v.right}
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

@@ -1,0 +1,208 @@
+<aura:component controller="ManageMarketingPreferencesController">
+    <aura:attribute type="Individual" name="individual"/>
+    <aura:attribute type="Boolean" name="brochureOnPageLoad"/>
+    <aura:attribute type="Account" name="account"/>
+    <aura:attribute type="Boolean" name="isExpanded" default="false"/>
+    <aura:attribute type="Boolean" name="savePromptRequired"/>
+    <aura:attribute type="Boolean" name="auditIsDue"/>
+    <aura:attribute type="Boolean" name="showSpinner" default="false"/>
+    <aura:attribute type="String" name="errorMessage"/>
+    <aura:attribute type="String" name="changeHistoryString"/>
+    <aura:attribute type="String" name="phoneFormatMessage" default="Please input the proper phone format. (e.g. +44 123 1234567 or +441231234567)"/>
+    <aura:attribute type="String" name="iconButtonHoverText" default="Click to paste the number into this Phone field"/>
+    <aura:registerEvent type="c:MarketingPreferenceFormChangeEvent" name="changeEvent" />
+    <aura:attribute type="Boolean" name="isPhoneAuditRequired"/>
+    <aura:attribute type="String" name="workItemPhoneNumber"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+
+    <aura:attribute type="Boolean" name="ctdEnabledMobile" default="false"/>
+    <aura:attribute type="Boolean" name="ctdEnabledHome" default="false"/>
+    <aura:attribute type="Boolean" name="ctdEnabledPhone" default="false"/>
+    <aura:attribute type="Boolean" name="ctdEnabledOther" default="false"/>
+    
+    <aura:if isTrue="{!v.isExpanded}">
+        
+        <aura:if isTrue="{!v.showSpinner}">
+            <div style="background:white">
+                <lightning:layout multipleRows="true" horizontalAlign="center">
+                    <lightning:layoutItem padding="around-medium" size="12" mediumDeviceSize="12" smallDeviceSize="12">
+                        <div style="height: 6rem; position: relative">
+                            <div role="status" class="slds-spinner slds-spinner_medium">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>
+            
+            <aura:set attribute="else">
+                
+                <aura:if isTrue="{!not(empty(v.errorMessage))}">
+                    <div class="slds-card__header slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" >
+                            <lightning:icon iconName="utility:warning" size="x-small" class="whiteIcon"/>
+                        </span>
+                        {!v.errorMessage}
+                    </div>
+                </aura:if>
+                
+                <div style="background:white">
+                    <lightning:layout multipleRows="true" horizontalAlign="center">
+                        <lightning:layoutItem padding="horizontal-medium" size="6" mediumDeviceSize="6" smallDeviceSize="12">
+                            
+                            <!-- BOXED AREA -->
+                            <fieldset class="slds-box slds-theme--default slds-container--small">
+                                <legend class="slds-text-heading--small 
+                                               slds-p-vertical--medium">
+                                    Phone Numbers
+                                </legend>
+                                <form class="slds-form--stacked">    
+                                    <aura:if isTrue="{!and(v.isPhoneAuditRequired,not(empty(v.workItemPhoneNumber)))}">
+                                        
+                                        <lightning:layout multipleRows="true">
+                                            <lightning:layoutItem size="10">
+                                                <lightning:input aura:id="inputField" type="tel" value="{!v.account.PersonMobilePhone}" label="Mobile Phone" name="mobile"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1" class="alignCenter">
+                                                <div class="slds-p-left_small" style="padding-top:20px;">
+                                                    <lightning:buttonIcon aura:id="mobileField" tooltip="{!v.iconButtonHoverText}" iconName="utility:replace" variant="bare" onclick="{! c.copyPhoneToField }"  />
+                                                </div>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1">
+                                                <div class="slds-p-left_small" style="padding-top:28px;">
+                                                    <lightning:buttonIcon aura:id="callClientMobile" tooltip="{!v.ctdEnabledMobile?'Call Client':''}" iconName="{!v.ctdEnabledMobile?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledMobile?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                </div>
+                                            </lightning:layoutItem>
+                                            
+                                            <lightning:layoutItem size="10">
+                                                <lightning:input aura:id="inputField" type="tel" value="{!v.account.PersonHomePhone}" label="Home Phone" name="home"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1" class="alignCenter">
+                                                <div class="slds-p-left_small" style="padding-top:20px;">
+                                                    <lightning:buttonIcon aura:id="homePhoneField" tooltip="{!v.iconButtonHoverText}" iconName="utility:replace" variant="bare" onclick="{! c.copyPhoneToField }" /> 
+                                                </div>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1">
+                                                <div class="slds-p-left_small" style="padding-top:28px;">
+                                                    <lightning:buttonIcon aura:id="callClientHome" tooltip="{!v.ctdEnabledHome?'Call Client':''}" iconName="{!v.ctdEnabledHome?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledHome?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                </div>
+                                            </lightning:layoutItem>
+                                            
+                                            <lightning:layoutItem size="10">
+                                                <lightning:input aura:id="inputField" type="tel" value="{!v.account.Phone}" label="Work Phone" name="work"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1" class="alignCenter">
+                                                <div class="slds-p-left_small" style="padding-top:20px;">
+                                                    <lightning:buttonIcon aura:id="phoneField" tooltip="{!v.iconButtonHoverText}" iconName="utility:replace" variant="bare" onclick="{! c.copyPhoneToField }"  />
+                                                </div>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1">
+                                                <div class="slds-p-left_small" style="padding-top:28px;">
+                                                    <lightning:buttonIcon aura:id="callClientPhone" tooltip="{!v.ctdEnabledPhone?'Call Client':''}" iconName="{!v.ctdEnabledPhone?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledPhone?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                </div>
+                                            </lightning:layoutItem>
+                                            
+                                            <lightning:layoutItem size="10">
+                                                <lightning:input aura:id="inputField" type="tel" value="{!v.account.PersonOtherPhone}" label="Other Phone" name="other"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1" class="alignCenter">
+                                                <div class="slds-p-left_small" style="padding-top:20px;">
+                                                    <lightning:buttonIcon aura:id="otherPhoneField" tooltip="{!v.iconButtonHoverText}" iconName="utility:replace" variant="bare" onclick="{! c.copyPhoneToField }" />
+                                                </div>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1">
+                                                <div class="slds-p-left_small" style="padding-top:28px;">
+                                                    <lightning:buttonIcon aura:id="callClientOther" tooltip="{!v.ctdEnabledOther?'Call Client':''}" iconName="{!v.ctdEnabledOther?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledOther?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                </div>
+                                            </lightning:layoutItem>                  
+                                            
+                                        </lightning:layout>
+                                        <aura:set attribute="else">
+                                            <lightning:layout multipleRows="true">
+                                                <lightning:layoutItem size="11">
+                                                    <lightning:input aura:id="inputField" type="tel" value="{!v.account.PersonMobilePhone}" label="Mobile Phone" name="mobile"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="1">
+                                                    <div class="slds-p-left_small" style="padding-top:28px;">
+                                                        <lightning:buttonIcon aura:id="callClientMobile" tooltip="{!v.ctdEnabledMobile?'Call Client':''}" iconName="{!v.ctdEnabledMobile?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledMobile?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                    </div>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="11">
+                                                    <lightning:input aura:id="inputField" type="tel" value="{!v.account.PersonHomePhone}" label="Home Phone" name="home"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="1">
+                                                    <div class="slds-p-left_small" style="padding-top:28px;">
+                                                        <lightning:buttonIcon aura:id="callClientHome" tooltip="{!v.ctdEnabledHome?'Call Client':''}" iconName="{!v.ctdEnabledHome?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledHome?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                    </div>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="11">
+                                                    <lightning:input aura:id="inputField" type="tel" value="{!v.account.Phone}" label="Work Phone" name="work"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="1">
+                                                    <div class="slds-p-left_small" style="padding-top:28px;">
+                                                        <lightning:buttonIcon aura:id="callClientPhone" tooltip="{!v.ctdEnabledPhone?'Call Client':''}" iconName="{!v.ctdEnabledPhone?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledPhone?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                    </div>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="11">
+                                                    <lightning:input aura:id="inputField" type="tel" value="{!v.account.PersonOtherPhone}" label="Other Phone" name="other"  pattern="^\+?[1-9]\d{1,14}$" onchange="{!c.setSavePrompt}" messageWhenPatternMismatch="{!v.phoneFormatMessage}"/>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="1">
+                                                    <div class="slds-p-left_small" style="padding-top:28px;">
+                                                        <lightning:buttonIcon aura:id="callClientOther" tooltip="{!v.ctdEnabledOther?'Call Client':''}" iconName="{!v.ctdEnabledOther?'utility:outbound_call':'utility:end_call'}" variant="bare" onclick="{! c.callClient }" class="{!v.ctdEnabledOther?'ctdIconActive':'ctdIconInactive'}"/> 
+                                                    </div>
+                                                </lightning:layoutItem>
+                                            </lightning:layout>
+                                        
+                                        </aura:set>
+                                        
+                                    </aura:if>
+                                    
+                                </form>
+                                
+                            </fieldset>
+                            <!-- / BOXED AREA -->
+
+                            <!-- Hidden Click To Dial Components-->
+                            <lightning:clickToDial aura:id="ctdMobile" value="{!v.account.PersonMobilePhone}" recordId="{!v.account.Id}" class="slds-hidden"/>
+                            <lightning:clickToDial aura:id="ctdHome" value="{!v.account.PersonHomePhone}" recordId="{!v.account.Id}" class="slds-hidden"/>
+                            <lightning:clickToDial aura:id="ctdPhone" value="{!v.account.Phone}" recordId="{!v.account.Id}" class="slds-hidden"/>
+                            <lightning:clickToDial aura:id="ctdOther" value="{!v.account.PersonOtherPhone}" recordId="{!v.account.Id}" class="slds-hidden"/>
+                            
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-medium" size="6" mediumDeviceSize="6" smallDeviceSize="12">
+                            <!-- BOXED AREA -->
+                            <fieldset class="slds-box slds-theme--default slds-container--small">
+                                <legend class="slds-text-heading--small 
+                                               slds-p-vertical--medium">
+                                    Mailing Address
+                                </legend>
+                                <form class="slds-form--stacked">    
+                                    <c:PostcodeLookup account="{!v.account}"/>
+                                </form>
+                                
+                            </fieldset>
+                            <!-- / BOXED AREA -->
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-medium" size="12" mediumDeviceSize="12" smallDeviceSize="12">
+                            <div class="slds-align_absolute-center slds-p-vertical_large">
+                                <lightning:button label="No Changes" title="No Changes Required" variant="neutral" onclick="{!c.noChanges}"/>
+                                <lightning:button label="Save" title="Save" variant="brand" onclick="{!c.onSave}"/>
+                                
+                                <aura:if isTrue="{!and(or(v.individual.Weekly_Newsletter__c,v.individual.Quarterly_Newsletter__c),v.account.EmailUndeliverable__c)}">
+                                    <lightning:input type="checkbox" class="slds-p-left_medium" label="Retry Email Address" value="{!v.account.EmailUndeliverableOverride__c}"  checked="{!v.account.EmailUndeliverableOverride__c}"/>
+                                    <lightning:helptext class="slds-p-left_xx-small slds-p-bottom_xx-small alert" iconName="utility:warning"
+                                        content="We've made several failed attempts to reach this client's email address. Please validate the address with the client and either update their email or select 'Retry Email Address' to reactivate marketing communications with the same email. "
+                                    />
+                                </aura:if>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </div>
+            </aura:set>
+        </aura:if>
+        
+    </aura:if>
+</aura:component>

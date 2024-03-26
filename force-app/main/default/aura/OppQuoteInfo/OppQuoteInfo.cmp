@@ -1,0 +1,105 @@
+<aura:component >
+    <aura:attribute name="quote" type="OppQuoteManagementController.QuoteWrapper"/>
+    <aura:attribute name="quoteSize" type="integer"/>
+    
+    <aura:registerEvent name="quoteUpdated" type="c:OppQuoteEvent"/>
+
+    <article class="slds-card">
+        <header class="slds-card__header slds-grid">
+            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                <!-- MEDIA TAG GOES HERE -->
+                <div class="slds-media__body slds-truncate">
+                    <h2>
+                        <a href="javascript:void(0);" class="slds-text-link--reset">
+                            <span class="slds-text-heading--small slds-text-align--left slds-box">
+                                {!v.quote.quoteRecord.DisplayOrder__c}.{!v.quote.quoteRecord.Name}
+                            </span>
+                        </a>
+                    </h2>
+                </div>
+            </div>
+            <div class="slds-no-flex slds-theme">
+                <ui:button press="{!c.doMoveUp}"  label="Move Up" class="slds-button slds-button--neutral slds-col--bump-left" disabled="{!v.quote.quoteRecord.DisplayOrder__c == 1}"/>
+                <ui:button press="{!c.doMoveDown}" label="Move Down" class="slds-button slds-button--neutral slds-col--bump-left" disabled="{!v.quote.quoteRecord.DisplayOrder__c == v.quoteSize}"/>
+            </div>
+        </header>
+        <div class="slds-card__body slds-text-align--left">
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Created Date</span>    
+                    <ui:outputDate value="{!v.quote.quoteRecord.CreatedDate}"/>
+                </div>  
+            </p>
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Package Description</span>    
+                    <ui:outputText value="{!v.quote.packageDescription}"/>
+                </div>  
+            </p>
+            <aura:if isTrue="{!v.quote.noOfGuestGroups > 1}">
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Total no. of Guest Groups</span>    
+                    <ui:outputNumber value="{!v.quote.noOfGuestGroups}"/>
+                </div>  
+            </p>
+            </aura:if>
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Travel Date</span>    
+                    <ui:outputDate value="{!v.quote.quoteRecord.TravelDate__c}"/>
+                </div>  
+            </p>
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Gross Sales Price</span>    
+                    <ui:outputCurrency value="{!v.quote.quoteRecord.SalePriceGross__c}"/>
+                </div>  
+            </p>
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Sales Price Per Person</span>    
+                    <ui:outputCurrency value="{!v.quote.quoteRecord.Sale_Price_Per_Person__c}"/>
+                </div>  
+            </p>
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Gross Profit Per Person</span>    
+                    <ui:outputCurrency value="{!v.quote.quoteRecord.Gross_profit_per_person__c}"/>
+                </div>  
+            </p>
+            
+            <!-- <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Expiry Date</span>    
+                    <ui:outputDate value="{!v.quote.quoteRecord.ExpirationDate__c}"/>
+                </div>  
+            </p> -->
+            <!-- <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label">Display Order</span>    
+                    <ui:outputNumber value="{!v.quote.quoteRecord.DisplayOrder__c}"/>
+                </div>  
+            </p> -->
+            
+            <p class="slds-truncate">
+                <!-- Display Order = {!q.quoteRecord.DisplayOrder__c}
+                  Select = {!q.isSelected}
+                  Size = {!v.quotes.length} -->
+            </p>
+            <br/>
+            <p class="slds-truncate">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <label class="slds-checkbox">
+                            <ui:inputCheckbox value="{!v.quote.isSelected}"/>
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label">Visible on Portal</span>
+                        </label>
+                    </div>
+                </div>  
+            </p>
+        </div>
+        <!-- <div class="slds-card__footer">Card Footer</div> -->
+    </article>
+</aura:component>

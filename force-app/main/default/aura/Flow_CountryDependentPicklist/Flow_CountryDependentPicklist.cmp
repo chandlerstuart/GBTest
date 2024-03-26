@@ -1,0 +1,54 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global"
+    controller="Flow_CountryDependentPicklistController">
+    <!-- cached data -->
+    <aura:attribute type="Object" name="buIdsWithTerritories" />
+    <aura:attribute type="Object" name="tIdsWithCountries" />
+
+    <!-- Picklist Data -->
+    <aura:attribute type="Object" name="territories" />
+    <aura:attribute type="List" name="countries" />
+    <aura:attribute type="Object" name="businessUnits" />
+
+    <!-- Input/Selected Values -->
+    <aura:attribute type="Boolean" name="showBusinessUnitSelection" default="true" />
+    <!-- Controlling switch to determine visiblity of component -->
+    <aura:attribute type="String" name="businessUnitId" />
+    <!--<aura:attribute type="Object" name="chosenCountries"/>-->
+    <aura:attribute type="String[]" name="selectedCountries" />
+    <aura:attribute type="String" name="territoryId" />
+    <aura:attribute type="String" name="buPicklistLabel" default="Select a business unit:" />
+    <aura:attribute type="String" name="territoryPicklistLabel" default="Select a territory:" />
+    <aura:attribute type="String" name="countryPicklistLabel" default="Select the countries of interest:" />
+
+    <!-- Actions -->
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}" />
+
+    <!-- Business Units -->
+    <!-- Encapsulated all logic within an 'if' statement. The cmp should only expose when the attribute has been assigned a True value-->
+    <aura:if isTrue="{!v.showBusinessUnitSelection}">
+        <lightning:select name="BusinessUnit" label="{!v.buPicklistLabel}" aura:id="territorySelect"
+            value="{!v.businessUnitId}" onchange="{!c.handleBusinessUnitSelection}">
+            <aura:iteration items="{!v.businessUnits}" var="bu">
+                <option text="{!bu.Name}" value="{!bu.Id}" selected="{!bu.selected}" />
+            </aura:iteration>
+        </lightning:select>
+    </aura:if>
+
+    <!-- Territories -->
+    <lightning:select name="Territories" label="{!v.territoryPicklistLabel}" aura:id="territorySelect"
+        value="{!v.territoryId}" onchange="{!c.handleTerritorySelection}">
+        <aura:iteration items="{!v.territories}" var="t">
+            <option text="{!t.Name}" value="{!t.Id}" selected="{!t.selected}" />
+        </aura:iteration>
+    </lightning:select>
+    <!-- Countries -->
+    <div class="slds-p-bottom_medium">
+        <lightning:dualListbox aura:id="countries" name="Select Countries" label="{!v.countryPicklistLabel}"
+            sourceLabel="Available Countries" selectedLabel="Selected Countries" onchange="{!c.handleCountrySelection}"
+            options="{! v.countries }" value="{! v.selectedCountries }" />
+    </div>
+
+    <!--Validation attribute-->
+    <aura:attribute name="validate" type="Aura.Action" />
+
+</aura:component>

@@ -1,0 +1,4 @@
+<design:component >
+    <design:attribute name="developerName" label="App Developer Name" description="The API Name of the Canvas Connected App."/>
+    <design:attribute name="recordId" label="Conversation Id" description="The Id of the conversation Id (to be passed via flow for quick chat action)."/>
+</design:component>

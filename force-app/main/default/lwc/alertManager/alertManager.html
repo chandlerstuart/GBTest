@@ -1,0 +1,22 @@
+<template>
+
+    <template if:true={showError}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                <lightning-icon size="small" class="whiteFill" icon-name="utility:error" alternative-text="" title=""></lightning-icon>
+            </span>
+            <h2>{message}</h2>
+        </div>
+    </template>
+    <template if:true={showWarning}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">warning</span>
+            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                <lightning-icon size="small" icon-name="utility:warning" alternative-text="" title=""></lightning-icon>
+            </span>
+            <h2>{message}</h2>
+        </div>
+    </template>
+
+</template>

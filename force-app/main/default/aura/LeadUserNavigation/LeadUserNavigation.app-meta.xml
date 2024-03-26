@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>36.0</apiVersion>
+    <description>The page displays the information of the Lead once done with the lead convert process. Information of the related Person Account and the newly created Opportunity is displayed.</description>
+</AuraDefinitionBundle>

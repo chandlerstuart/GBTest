@@ -1,0 +1,8 @@
+<template>
+    <div class="slds-p-top_small">
+        <actonit-quick-text-utility aura:id="quickTextUtility" channel={channel} who-id={whoId} what-id={recordId} ></actonit-quick-text-utility>
+    </div>
+    <div class="slds-p-top_small">
+        <lightning-textarea name="mainMessage" required="true" value={message} onchange={handleChange} label="Message" placeholder="enter you message here..."></lightning-textarea>
+    </div>
+</template>

@@ -1,0 +1,10 @@
+<design:component>
+    <design:attribute name="value" label="Button Selected" description="Output: The button selected ('button1','button2','button3')"/>
+    <design:attribute name="button1Label" label="Button 1 Label"/>
+    <design:attribute name="button1Style" label="Button 1 Style" description="Accepted styles include 'base', 'neutral', 'brand', 'destructive', 'inverse' and 'success'."/>
+    <design:attribute name="button2Label" label="Button 2 Label" />
+    <design:attribute name="button2Style" label="Button 2 Style" description="Accepted styles include 'base', 'neutral', 'brand', 'destructive', 'inverse' and 'success'."/>
+    <design:attribute name="button3Label" label="Button 3 Label"/>
+    <design:attribute name="button3Style" label="Button 3 Style" description="Accepted styles include 'base', 'neutral', 'brand', 'destructive', 'inverse' and 'success'."/>
+    <design:attribute name="position" label="Position" description="The position the buttons will appear. Accepted positions include 'left', 'right' and 'centre'."/>
+</design:component>

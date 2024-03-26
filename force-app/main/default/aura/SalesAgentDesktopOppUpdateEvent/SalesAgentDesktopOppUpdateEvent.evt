@@ -1,0 +1,2 @@
+<aura:event type="APPLICATION" description="Fired when an Opportunity is updated">
+</aura:event>

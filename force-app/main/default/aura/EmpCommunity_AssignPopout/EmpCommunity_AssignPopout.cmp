@@ -1,0 +1,76 @@
+<aura:component controller="EmpCommunity_ParkingController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="space" type="EmpCommunity_ParkingController.ParkingWrapper" default="new EmpCommunity_ParkingController.ParkingWrapper()"/>
+    <aura:attribute name="userList" type="EmpCommunity_ParkingController.UserWrapper[]"/>
+    <aura:attribute name="selectedUserId" type="Id"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!-- <aura:handler event="c:EmpCommunity_UserListEvent" action="{!c.handleUserEvent}"/> -->
+    <aura:registerEvent name="spaceUpdated" type="c:EmpCommunity_SpaceAssignedEvent"/>
+
+    
+	<div class="slds-modal__container">
+        <div class="slds-modal__content">
+            <div class="slds-docked-composer slds-grid slds-grid--vertical slds-nowrap">
+                <header class="slds-docked-composer__header slds-grid slds-grid--align-spread slds-shrink-none">
+                    <div class="slds-media slds-media--left">
+                        <div class="slds-media__figure">
+                            
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 id="dialog-heading-id">Assign {!v.space.spaceNumber}</h2>
+                        </div>
+                    </div>
+                    <div class="slds-docked-composer__actions">
+                        <!-- CLOSE BUTTON WENT HERE -->
+                    </div>
+                </header>
+                <!-- MAIN CONTENT WENT HERE -->
+                <body>
+                <div class="slds-form-element__group">
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element--left slds-size--1-of-2">
+                            <label class="slds-form-element__label">{!$Label.c.EmpCommunity_AvailableFrom}</label>
+                            <ui:outputDate value="{!v.space.availableFrom}" class="slds-truncate"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element--left slds-size--1-of-2">
+                            <label class="slds-form-element__label">{!$Label.c.EmpCommunity_AvailableTo}</label>
+                            <ui:outputDate value="{!v.space.availableTo}" class="slds-truncate"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element--left slds-size--1-of-2">
+                            <label class="slds-form-element__label">Owner</label>
+                            <aura:renderIf isTrue="{!v.space.ownerName != null}">
+                                <ui:outputText value="{!v.space.ownerName}" class="slds-truncate"/>
+                            </aura:renderIf>
+                            <aura:renderIf isTrue="{!v.space.ownerName == null}">
+                                <ui:outputText value="No Current Owner" class="slds-truncate"/>  
+                            </aura:renderIf>
+                        </div>
+                    </div>  
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element--left slds-size--1-of-1">
+                            <label class="slds-form-element__label" for="input-03">Assign To</label>
+                            
+                            <ui:inputSelect class="slds-truncate" aura:id="assignUsers" label="Select User" change="{!c.onSelectChange}">
+                                <ui:inputSelectOption text="NONE" label="-- Select --"/>
+                                <aura:iteration items="{!v.userList}" var="user">
+                                    <ui:inputSelectOption text="{!user.userId}" label="{!user.userName}"/>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </div>
+                    </div>
+                </div>
+                </body>
+                <!-- /MAIN CONTENT WENT HERE -->
+                <footer class="slds-docked-composer__footer slds-shrink-none">
+                    <div class="slds-float--right slds-grid slds-grid--align-end slds-size--1-of-2 slds-text-align--right">
+                        <ui:button press="{!c.assignSpace}" class="slds-button slds-button--brand">Assign</ui:button>
+                        <ui:button press="{!c.cancelAssign}" class="slds-button slds-button--brand">Cancel</ui:button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+</aura:component>

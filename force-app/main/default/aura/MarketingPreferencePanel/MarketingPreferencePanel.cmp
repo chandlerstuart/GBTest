@@ -1,0 +1,131 @@
+<aura:component >
+    <aura:attribute type="Individual" name="individual"/>
+    <aura:attribute type="Account" name="account"/>
+    <aura:attribute type="Boolean" name="isExpanded"/>
+    <aura:attribute type="Boolean" name="auditIsDue"/>
+    <aura:attribute type="Boolean" name="savePromptRequired"/>
+    <aura:handler name="change" value="{!v.account}" action="{!c.addOrRemoveAlerts}"/>
+    <aura:method name="revisePanelValidation" action="{!c.addOrRemoveAlerts}"/>
+    
+    
+    <lightning:layout class="{!v.auditIsDue? 'slds-p-bottom_small':'slds-p-vertical_medium'}"  horizontalAlign="spread" multipleRows="true" verticalAlign="top">
+        <!--Last Audit -->
+        <lightning:layoutItem size="12">
+            <aura:if isTrue="{!v.auditIsDue}">
+                <div class="slds-card__header slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span style="padding-top:7px;">
+                        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" >
+                            <lightning:icon iconName="utility:warning" size="x-small" class="whiteIcon"/>
+                        </span>
+                        <lightning:formattedText value="{!v.individual.Data_Audit_Last_Completed__c==null?'Audit is required! Never Audited':'Audit is required! Last Audit Date: '+v.individual.Data_Audit_Last_Completed__c}"/>
+                    </span>
+                </div>    
+            </aura:if> 
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem size="12">
+            <lightning:layout multipleRows="true" class="slds-p-horizontal_small">
+                <!-- Dropdown Icon -->
+                <lightning:layoutItem size="1" class="expandOrCollapseSection">
+                    <lightning:layoutItem size="1" class="slds-align-middle">
+                            <button class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.expandOrCollapse}">
+                                <lightning:icon iconName="{!!v.isExpanded?'utility:chevronright':'utility:chevrondown'}" size="small" alternativeText="" class="chevronColour"/>
+                            </button>
+                        </lightning:layoutItem>
+                </lightning:layoutItem>
+                
+                <!-- Preferences -->
+                <lightning:layoutItem size="10" class="icon-section"> 
+                    <div class="slds-grid slds-wrap slds-gutters slds-grid_align-space">
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button aura:id="home" id="brochure" class="slds-button slds-align_absolute-center" style="line-height:1.2rem;" onclick="{!c.handlePreferenceSelection}">
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="home-icon" class="slds-size_1-of-1">
+                                        <lightning:icon iconName="utility:home" size="small" alternativeText="Brochure" class="{!v.individual.Brochure__c? 'subscribed':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="Brochure" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small"/>
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button aura:id="weekly" id="weekly" class="slds-button slds-align_absolute-center" style="line-height:1.2rem;" onclick="{!c.handlePreferenceSelection}">
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="weekly-icon" class="slds-size_1-of-1">
+                                        <lightning:icon iconName="utility:email" size="small" alternativeText="Weekly Newsletter" class="{!v.individual.Weekly_Newsletter__c? 'subscribed ':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="Weekly" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small" />
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button aura:id="seasonal" id="seasonal" class="slds-button slds-align_absolute-center" style="line-height:1.2rem;" onclick="{!c.handlePreferenceSelection}">
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="seasonal-icon" class="slds-size_1-of-1">
+                                        <lightning:icon iconName="utility:email" size="small" alternativeText="Seasonal Newsletter" class="{!v.individual.Quarterly_Newsletter__c? 'subscribed':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="Seasonal" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small"/>
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button aura:id="tournaments" id="tournaments" class="slds-button slds-align_absolute-center" style="line-height:1.2rem;" onclick="{!c.handlePreferenceSelection}"> 
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="tournaments-icon" class="slds-size_1-of-1">
+                                        <lightning:icon iconName="utility:email" size="small" alternativeText="Tournaments" class="{!v.individual.TournamentsNewsletter__c? 'subscribed':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="Tournaments" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small"/>
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button aura:id="events" id="events" class="slds-button slds-align_absolute-center" style="line-height:1.2rem;" onclick="{!c.handlePreferenceSelection}">
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="events-icon" class="slds-size_1-of-1">
+                                        <lightning:icon iconName="utility:email" size="small" alternativeText="Events" class="{!v.individual.EventsNewsletter__c? 'subscribed':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="Events" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small"/>
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button id="sms" class="slds-button slds-align_absolute-center" style="line-height:1rem;" onclick="{!c.handlePreferenceSelection}">
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="sms-icon" class="slds-size_1-of-1"> 
+                                        <lightning:icon iconName="utility:sms" size="small" alternativeText="SMS" class="{!v.individual.SMS__c? 'subscribed':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="SMS" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small"/>
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12 slds-medium-size_3-of-12 slds-small-size_6-of-12">
+                            <button id="phone" class="slds-button slds-align_absolute-center" style="line-height:1.2rem;" onclick="{!c.handlePreferenceSelection}">
+                                <div class="slds-wrap slds-align_absolute-center slds-text-align_center slds-grid">
+                                    <div aura:id="phone-icon" class="slds-size_1-of-1">
+                                        <lightning:icon iconName="utility:outbound_call" size="small" alternativeText="Proactive Call"  class="{!v.individual.Phone__c? 'subscribed':'unsubscribed'}"/>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:formattedText value="Calls" class="slds-p-horizontal_small slds-align_absolute-center slds-text-body_small"/>
+                                    </div>
+                                </div>
+                            </button>                        
+                        </div>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <lightning:layoutItem size="1"/>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}" />
+</aura:component>

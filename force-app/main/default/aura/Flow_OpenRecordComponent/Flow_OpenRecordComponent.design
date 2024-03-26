@@ -1,0 +1,6 @@
+<design:component>
+   <design:attribute name="openOnPageLoad" label="Auto Open" Description="If left unselected a button will be displayed. If selected the record will open when the screen loads. " />
+   <design:attribute name="recordId" label="Record Id" Description="The Id of the record you would like to open"/>
+   <design:attribute name="buttonText" label="Button Text" Description="The Name of the Button i.e. Open Record, Open Case, Open Ticket etc"/>   
+   <design:attribute name="IsCommunityFlow" label="Community Flow" Description="Record Navigation differs in the Lightning Experience vs the Community. Select this checkbox if the flow will be hosted in a Community"/>    
+</design:component>

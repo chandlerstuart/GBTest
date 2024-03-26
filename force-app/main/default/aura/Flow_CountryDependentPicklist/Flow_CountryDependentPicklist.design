@@ -1,0 +1,16 @@
+<design:component>
+    <design:attribute label="Show Business Unit Selection" name="showBusinessUnitSelection"
+        description="Remove the ability for exposure of the Business Unit Selection." />
+    <design:attribute label="Business Unit Id" name="businessUnitId"
+        description="Input: The Default Business Unit (Id). Output: The selected Business Unit (Id)" />
+    <design:attribute label="Territory Id" name="territoryId"
+        description="Input: The Default Territory (Id). Output: The selected Territory (Id)" />
+    <design:attribute label="Selected Countries" name="selectedCountries"
+        description="Output: The selected Countries" />
+    <design:attribute label="Business Unit Picklist Label" name="buPicklistLabel"
+        description="The Business Unit Picklist Label" />
+    <design:attribute label="Territory Picklist Label" name="territoryPicklistLabel"
+        description="The Territory Picklist Label" />
+    <design:attribute label="Country Picklist Label" name="countryPicklistLabel"
+        description="The Countries Picklist Label" />
+</design:component>

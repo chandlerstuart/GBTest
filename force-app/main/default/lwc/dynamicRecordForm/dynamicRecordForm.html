@@ -1,0 +1,14 @@
+<template>
+    <template if:true={showDynamicForm}>
+        <lightning-card title={title} icon-name="standard:record">
+            <div class="slds-m-around_medium">
+                <!-- Specify the objectApiName and recordId dynamically -->
+                <lightning-record-form
+                    object-api-name={objectApiName}
+                    record-id={theRecordId}
+                    layout-type="Full"
+                ></lightning-record-form>
+            </div>
+        </lightning-card>
+    </template>
+</template>

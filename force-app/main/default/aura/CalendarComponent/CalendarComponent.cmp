@@ -1,0 +1,51 @@
+<aura:component controller="LC03_CalendarEventsController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+    <ltng:require styles="/resource/FullCalendar/fullcalendar-2.6.0/fullcalendar.min.css" scripts="/resource/JQuery,/resource/FullCalendar/fullcalendar-2.6.0/fullcalendar.min.js,/resource/html2canvas,/resource/jsPDF/jsPDF-1.2.60/jspdf.js,/resource/jsPDF/jsPDF-1.2.60/plugins/addimage.js" afterScriptsLoaded="{!c.afterScriptsLoaded}"/>
+    <aura:attribute name="events" type="String"/>
+    <aura:attribute name="recordTypes" type="String[]"/>
+    <aura:attribute name="eventTypes" type="String[]"/>
+    <aura:attribute name="territories" type="String[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    <div id="exportTextId" style="background-color:#ffffff">
+        <div>
+            <ltng:require styles="/resource/SLDS090/assets/styles/salesforce-lightning-design-system-ltng.css" />
+            <span class="slds">Record Type</span>&nbsp;
+            <ui:inputSelect class="slds" aura:id="recordTypeBox" label="" change="{!c.filterChange}">
+                <aura:iteration items="{!v.recordTypes}" var="rt">
+                    <ui:inputSelectOption text="{!rt}"/>
+                </aura:iteration>
+            </ui:inputSelect>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="slds">Type</span>&nbsp;
+            <ui:inputSelect class="slds" aura:id="eventTypeBox" label="" change="{!c.filterChange}">
+                <aura:iteration items="{!v.eventTypes}" var="et">
+                    <ui:inputSelectOption text="{!et}"/>
+                </aura:iteration>
+            </ui:inputSelect>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="slds">Territory</span>&nbsp;
+            <ui:inputSelect class="slds" aura:id="territoryBox" label="" change="{!c.filterChange}">
+                <aura:iteration items="{!v.territories}" var="territory">
+                    <ui:inputSelectOption text="{!territory}"/>
+                </aura:iteration>
+            </ui:inputSelect>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <ui:button label="Export As PDF" press="{!c.exportToPDF}"/>
+            <ui:button label="Export As Image" press="{!c.exportToIMAGE}"/>
+        </div>
+        <div id="exportId" style="background-color:#ffffff">
+            
+            <div class="slds-col--padded slds-size--1-of-6">
+                <div class="saveLabelStyle2">
+                    <ui:outputText class="slds slds-text-body--large" value="Marketing Program"/>
+                </div>
+            </div>  
+            <div class="slds-col--padded slds-size--1-of-6">
+                <div class="saveLabelStyle">
+                    <ui:outputText class="slds slds-text-body--large" value="Marketing Campaign/Event"/>
+                </div>
+            </div>
+            <div style="padding-top: 40px">
+                <center>
+                    <div id="calendar" aura:id="calendar"/>
+                </center>
+            </div>
+        </div>
+    </div>
+</aura:component>

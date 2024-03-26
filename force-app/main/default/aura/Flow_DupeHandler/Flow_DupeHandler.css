@@ -1,0 +1,12 @@
+.THIS {
+}
+.THIS .whiteIcon svg{
+    fill:white;
+}
+.THIS .greenIcon svg{
+    fill:#b0d630;
+}
+.THIS .saveButton{
+    color:rgb(22, 50, 92);
+    font-weight: bold;
+}

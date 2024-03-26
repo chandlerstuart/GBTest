@@ -1,0 +1,6 @@
+<aura:component controller="ChangeRequestStatusAlertExtension" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId" access="global" >
+    <aura:attribute name="recordId" type="Id"/>
+    <aura:attribute name="myAccount" type="Account"/>
+    <aura:handler name="init" value="this" action="{!c.init}"/>
+    <div aura:id="alertMsg"></div>
+</aura:component>

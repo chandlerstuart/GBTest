@@ -1,0 +1,209 @@
+<aura:component controller="LC01_ScoringLightningController">
+    <aura:attribute name="leadScoringRule" type="LeadScoringRule__c" default="{ 'sobjectType': 'LeadScoringRule__c',
+                                                                              'Active__c': true,
+                                                                              'FieldLabel__c': '-',
+                                                                              'Name': '',
+                                                                              'Operator__c': '-',
+                                                                              'Points__c': '',
+                                                                              'RecordTypeId': '',
+                                                                              'RecordType__c': '',
+                                                                              'Value__c': '',
+                                                                              'MinimumValue__c': '',
+                                                                              'MaximumValue__c': ''}"/>
+    <aura:attribute name="isCreate" type="Boolean" default="true"/>
+    <aura:attribute name="leadScoringRules" type="LeadScoringRule__c[]"/>
+    <aura:attribute name="fields" type="String[]"/>
+    <aura:attribute name="recordTypes" type="String[]"/>
+    <aura:attribute name="selectedRule" type="LeadScoringRule__c"/>
+    
+    <aura:attribute name="ruleSelected" type="String" default="Lead"/>
+    <aura:attribute name="recordSelected" type="String"/>
+    <aura:attribute name="fieldSelected" type="String"/>
+    <aura:attribute name="fSelected" type="String"/>
+    <aura:attribute name="operator" type="String" default="equals"/>
+    
+    <aura:attribute name="errorMsg" type="String" default=""/>
+    <aura:attribute name="infoMsg" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    
+    <ltng:require styles="/resource/SLDS090/assets/styles/salesforce-lightning-design-system-ltng.css" />
+    <c:messages errorMsg="{!v.errorMsg}" infoMsg="{!v.infoMsg}"/>
+    <div>
+        <div class="container">
+            <form class="slds-form">
+                <div class="slds-grid">
+                	<div class="slds-col--padded slds-size--1-of-2">
+                        <p class="slds-text-body--large slds-page-header__info">INFORMATION</p>
+                        <div class="slds-form-element slds-is-required paddingTop">
+                            <div class="slds-form-element__control">
+                                <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" required="true" 
+                                                label="Rule Type: " aura:id="objectBox" change="{!c.onInit}" 
+                                                value="{!v.ruleSelected}" disabled="{!!v.isCreate}">
+                                        <ui:inputSelectOption text="Lead"/>
+                                        <ui:inputSelectOption text="Case"/>
+                                </ui:inputSelect>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-is-required paddingTop">
+                            <div class="slds-form-element__control">
+                                <ui:inputText class="slds-input" labelClass="slds-form-element__label" required="true" 
+                                              label="Rule Name: " aura:id="ruleNameBox"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-is-required paddingTop">
+                            <div class="slds-form-element__control">
+                                <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" required="true"  
+                                                aura:id="recordTypeBox" label="Record Type: " value="{!v.recordSelected}">
+                                    <aura:iteration items="{!v.recordTypes}" var="rt">
+                                        <ui:inputSelectOption text="{!rt}"/>
+                                    </aura:iteration>
+                                </ui:inputSelect>
+                            </div>
+                        </div>
+                        <div class="paddingTop">
+                			<ui:inputCheckbox labelClass="check" label="Active: " aura:id="activeCheckbox" value="false" />
+                        </div>
+                        <div class="saveBtnWrapper">
+                            <aura:renderIf isTrue="{!v.isCreate}">
+                            	<ui:button class="saveBtn" labelClass="btnLabel" aura:id="saveBtnId"
+                                           			press="{!c.handleSave}" label="Save" />
+                            </aura:renderIf>
+                            <aura:renderIf isTrue="{!!v.isCreate}">
+                            	<ui:button class="editBtns" labelClass="btnLabel" aura:id="saveBtnId"
+                                           			press="{!c.handleSave}" label="Update" />
+                                <ui:button class="editBtns"  labelClass="btnLabel" aura:id="saveBtnId"
+                                           			press="{!c.cancelEdit}" label="Cancel" />
+                            </aura:renderIf>
+                        </div>
+                    </div>
+                    <div class="slds-col--padded slds-size--1-of-2">
+                        <p class="slds-text-body--large slds-page-header__info">RULE CRITERIA</p>
+                        <div class="slds-form-element slds-is-required paddingTop">
+                            <div class="slds-form-element__control">
+                                <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" required="true" 
+                                                aura:id="fieldBox" label="Field Name: " value="{!v.fieldSelected}">
+                                    <aura:iteration items="{!v.fields}" var="field">
+                                        <ui:inputSelectOption text="{!field}"/>
+                                    </aura:iteration>
+                                </ui:inputSelect>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-is-required paddingTop">
+                            <div class="slds-form-element__control">
+                                <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" required="true" 
+                                                aura:id="operatorBox" label="Operator: " value="{!v.operator}">
+                                    <ui:inputSelectOption text="equals"/>
+                                    <ui:inputSelectOption text="not equals"/>
+                                    <ui:inputSelectOption text="contains"/>
+                                    <ui:inputSelectOption text="starts with"/>
+                                    <ui:inputSelectOption text="less than/greater than"/>
+                                </ui:inputSelect>
+                            </div>
+                        </div>
+                        <aura:renderIf isTrue="{!v.operator != 'less than/greater than'}">
+                            <div class="slds-form-element slds-is-required paddingTop">
+                                <div class="slds-form-element__control">
+                                    <ui:inputText class="slds-input" labelClass="slds-form-element__label" required="true" 
+                                                  label="Value: " aura:id="valueBox"/>
+                                </div>
+                            </div>
+                        </aura:renderIf>
+                        <aura:renderIf isTrue="{!v.operator == 'less than/greater than'}">
+                            <div class="slds-grid">
+                				<div class="slds-col--padded slds-size--1-of-2">
+                                    <div class="slds-form-element slds-is-required paddingTop">
+                                        <div class="slds-form-element__control">
+                                            <ui:inputNumber class="slds-input" labelClass="slds-form-element__label"  
+                                                          label="Minimum Value: " aura:id="minValueBox"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col--padded slds-size--1-of-2">
+                                    <div class="slds-form-element slds-is-required paddingTop">
+                                        <div class="slds-form-element__control">
+                                            <ui:inputNumber class="slds-input" labelClass="slds-form-element__label"  
+                                                          label="Maximum Value: " aura:id="maxValueBox"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:renderIf>
+                        <div class="slds-form-element slds-is-required paddingTop">
+                            <div class="slds-form-element__control">
+                                <ui:inputText class="slds-input" labelClass="slds-form-element__label" required="true" 
+                                              label="Point: " aura:id="pointBox"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        	</form>
+        </div> 
+    </div>
+    <div class="slds-col--padded slds-p-top--large">
+    	<aura:renderIf isTrue="{!v.leadScoringRules.length > 0}">
+            <div class="col-lg-9 col-md-9 col-sm-12">
+                <div class="col-lg-12 col-sm-12">
+                    <p class="slds-text-body--large slds-page-header__info">Lead Scoring Rules</p>
+                </div>
+                <table class="slds-table slds-table--bordered slds-table--striped">
+              <thead>
+                <tr>
+                   <th scope="col"><span class="slds-truncate">Name</span></th>
+                   <th scope="col"><span class="slds-truncate">Active</span></th>
+                   <th scope="col"><span class="slds-truncate">Record Type</span></th>
+                   <th scope="col"><span class="slds-truncate">Field Source</span></th>
+                   <th scope="col"><span class="slds-truncate">Operator</span></th>
+                   <th scope="col"><span class="slds-truncate">Value</span></th>
+                   <th scope="col"><span class="slds-truncate">Points</span></th>
+                    <th scope="col"><span class="slds-truncate">Delete/Edit</span></th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <aura:iteration items="{!v.leadScoringRules}" var="rules">
+                 <tr>
+                   <td>{!rules.Name}</td>                 
+                   <td><ui:outputCheckbox value="{!rules.Active__c}"/></td>
+                   <td>{!rules.RecordType__c}</td>                 
+                   <td>{!rules.FieldLabel__c}</td>
+                   <td>{!rules.Operator__c}</td>
+                   <td>
+                       <aura:if isTrue="{!rules.Operator__c != 'less than/greater than'}">
+                       		{!rules.Value__c}
+                       		<aura:set attribute="else">
+                                <aura:if isTrue="{!rules.MinimumValue__c}">
+                                	{!rules.MinimumValue__c}
+                                </aura:if>
+                                 ~ 
+                                <aura:if isTrue="{!rules.MaximumValue__c}">
+                                	{!rules.MaximumValue__c}
+                                </aura:if>
+                        	</aura:set>
+                       </aura:if>
+                   </td>
+                   <td>{!rules.Points__c}</td>
+                   <td>
+                      <c:button class="slds-button slds-button--neutral editDeleteBtn"
+                         label="Delete"
+                         isEnabled="{!v.isCreate}"
+                         svgXlinkHref="/resource/SLDS090/assets/icons/standard-sprite/svg/symbols.svg#account"
+                         svgClass="slds-icon slds-icon-text-default"
+                         onclick="{!c.delete}"
+                         data="{!rules.Id}"
+                      />
+                      <c:button class="slds-button slds-button--neutral editDeleteBtn"
+                         label="Edit"
+                         svgXlinkHref="/resource/SLDS090/assets/icons/standard-sprite/svg/symbols.svg#note"
+                         svgClass="slds-icon slds-icon-text-default"
+                         onclick="{!c.update}"
+                         data="{!rules.Id}"
+                      />
+                   </td>
+                 </tr>
+                </aura:iteration>
+              </tbody>
+           </table>
+            </div>
+        </aura:renderIf>
+    </div> 
+</aura:component>

@@ -1,0 +1,6 @@
+<design:component>
+    <design:attribute name="isReadOnly" label="Read Only" description="If true, the text will not be editable to the user"/>
+    <design:attribute name="size" label="Size" description="Acceptable values incl; 'x-small','small','medium','large','x-large'"/>
+    <design:attribute name="value" label="Value" description="Input: Default Text. Output: Text input from user"/>
+    <design:attribute name="label" label="Label" description="The label of the Text Box"/>
+</design:component>

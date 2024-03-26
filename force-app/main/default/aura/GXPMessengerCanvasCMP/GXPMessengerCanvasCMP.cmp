@@ -1,0 +1,19 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens" controller="GXPMessengerCanvasCMPController">
+    
+    <aura:attribute name="canvasParameters" type="string" />
+    <aura:attribute name="developerName" type="string" />
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="showCanvas" type="Boolean" default="false"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:if isTrue="{!v.showCanvas}">
+                <force:canvasApp 
+                                applicationName="GXP Messenger" 
+                                developerName="{!v.developerName}"
+                                height="750px" 
+                                width="100%"
+                                parameters="{!v.canvasParameters}"/>
+    </aura:if>
+                        
+</aura:component>

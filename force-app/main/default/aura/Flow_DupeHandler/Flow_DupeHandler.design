@@ -1,0 +1,38 @@
+<design:component>
+	<design:attribute label="Duplicate Record Ids" name="dupeRecordIds" description="The Ids of the records that will be displayed for comparison with the Input Fields." required="true"/>
+    <design:attribute label="Duplicate Record Display Fields" name="dupeRecordCardFields" description="A comma separated list of (API) Field Names for displaying on the Dupe Record Layout." required="true"/>
+    <design:attribute label="Duplicate Record SLDS Icon" name="dupeRecordCardSLDSIcon" description="The SLDS Icon to display on the Duplicate Record Layout. https://lightningdesignsystem.com/icons/" default="standard:person_account" required="true"/>
+    <design:attribute label="Duplicate Record Object Name Field" name="dupeRecordObjectNameField" description="The API name of the 'Name' field for the specified Object. This will be the field displayed in the Dupe Record Header." default="Name" required="true"/>
+    <design:attribute label="Duplicate Record sObject Type" name="dupeRecordSObjectType" description="The SObjectType of the Duplicate Records e.g. Account, Booking__c" default="Account" required="true"/>
+    <design:attribute label="No Match" name="noMatch" description="True of the user has selected the 'Not a match' button." default="false"/>
+    <design:attribute label="Duplicate Alert Message" name="dupeWarningMessage" description="The alert message to display to the users" default="We found potential duplicates. Please select correct account or “Not a match” to continue." required="true"/>
+    <design:attribute label="No Match Button Text" name="buttonText" description="The label for the 'No Match' button" default="Not a match - Create new record"/>
+    <design:attribute label="Display No Match Button" name="showNoMatchButton" description="If false, the No Match Button will be hidden and the agent will be forced to choose from the existing duplicates. Note - The No Match button will also be disabled if an existing dupe has a matching email. This is to support our efforts of ensuring no two Accounts have a matching email"/>
+    <design:attribute label="Selected Duplicate Id" name="selectedDupeId" description="The Id of the duplicate record selected by the user"/>
+    
+    <design:attribute label="Field 1 Name" name="compareField1APIName" description="The API Name of the 1st field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 1 Value" name="compareField1Value" description="The Value of the 1st field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 2 Name" name="compareField2APIName" description="The API Name of the 2nd field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 2 Value" name="compareField2Value" description="The Value of the 2nd field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 3 Name" name="compareField3APIName" description="The API Name of the 3rd field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 3 Value" name="compareField3Value" description="The Value of the 3rd field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 4 Name" name="compareField4APIName" description="The API Name of the 4th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 4 Value" name="compareField4Value" description="The Value of the 4th field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 5 Name" name="compareField5APIName" description="The API Name of the 5th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 5 Value" name="compareField5Value" description="The Value of the 5th field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 6 Name" name="compareField6APIName" description="The API Name of the 6th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 6 Value" name="compareField6Value" description="The Value of the 6th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 7 Name" name="compareField7APIName" description="The API Name of the 7th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 7 Value" name="compareField7Value" description="The Value of the 7th field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 8 Name" name="compareField8APIName" description="The API Name of the 8th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 8 Value" name="compareField8Value" description="The Value of the 8th field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 9 Name" name="compareField9APIName" description="The API Name of the 9th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 9 Value" name="compareField9Value" description="The Value of the 9th field that will displayed side by side with the value of the selected duplicate"/>
+    <design:attribute label="Field 10 Name" name="compareField10APIName" description="The API Name of the 10th field that will displayed side by side with the value of the selected duplicate"/>
+	<design:attribute label="Field 10 Value" name="compareField10Value" description="The Value of the 10th field that will displayed side by side with the value of the selected duplicate"/>
+    
+    <design:attribute label="Dupe Card Large Device Size" name="largeDeviceSize" description="The size of the duplicate cards on a large device (full screen desktop). Maximum = 12. 12 is full width (single column), 6 is half width (2 columns) etc."/>
+    <design:attribute label="Dupe Card Medium Device Size" name="mediumDeviceSize" description="The size of the duplicate cards on a medium sized device. Maximum = 12. 12 is full width (single column), 6 is half width (2 columns) etc."/>
+    <design:attribute label="Dupe Card Small Device Size" name="smallDeviceSize" description="The size of the duplicate cards on a small device (mobile or small width utility component). Maximum = 12. 12 is full width (single column), 6 is half width (2 columns) etc."/>
+    <design:attribute label="Dupe Card Size" name="size" description="The base size of the duplicate cards. Maximum = 12. 12 is full width (single column), 6 is half width (2 columns) etc."/>
+</design:component>

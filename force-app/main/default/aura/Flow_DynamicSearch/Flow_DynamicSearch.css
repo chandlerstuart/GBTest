@@ -1,0 +1,20 @@
+.THIS {
+}
+.THIS .whiteFill svg{
+    fill:white;
+}
+.THIS.clearButton{
+    border:none !important;
+    background-color:transparent !important;
+    padding-left: 0rem;
+}
+.THIS.successIcon svg{
+    fill:green;
+}
+.THIS .closeModal svg{
+    fill:white;
+}
+.THIS .slds-modal__container{
+    max-width: 70rem !important;
+    width:80% !important;
+}

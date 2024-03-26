@@ -1,0 +1,284 @@
+<aura:component controller="LC06_SalesAgentDesktopController" implements="force:appHostable,flexipage:availableForAllPageTypes">
+  <ltng:require scripts="/support/console/22.0/integration.js"/>
+  <ltng:require styles="/resource/slds090/assets/styles/salesforce-lightning-design-system-vf.css"/>
+    
+  <aura:attribute name="todayLeads" type="ListViewWrapper[]" />
+  <aura:attribute name="todayOpps" type="ListViewWrapper[]" />
+  <aura:attribute name="todayCases" type="ListViewWrapper[]" />    
+  <aura:attribute name="todayTasks" type="ListViewWrapper[]" />    
+  <aura:attribute name="thisWeekLeads" type="ListViewWrapper[]" />    
+  <aura:attribute name="thisWeekOpps" type="ListViewWrapper[]" />    
+  <aura:attribute name="thisWeekCases" type="ListViewWrapper[]" />    
+  <aura:attribute name="thisWeekTasks" type="ListViewWrapper[]" />
+  <aura:attribute name="totalLeads" type="ListViewWrapper[]" />
+  <aura:attribute name="totalOpps" type="ListViewWrapper[]" />
+  <aura:attribute name="totalCases" type="ListViewWrapper[]" />
+  <aura:attribute name="totalTasks" type="ListViewWrapper[]" />    
+    
+  <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>    
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>  
+    <style>
+        td.resultCol:nth-child(even) {background: #CCC}
+		td:nth-child(odd) {background: #FFF} 
+        tr.removeHover:hover {
+          background-color: #fff;
+        }
+        td.field_label:hover{text-decoration: underline; cursor:pointer }
+        .spinnerHeight{
+        	height: 100%;
+        }
+    </style>    
+    <div class="slds">
+    <div id="summaryHeader" class="slds-page-header">
+    <p class="slds-page-header__title" style="font-size:200%">{!$Label.c.My_Work_Label}</p></div>        
+      
+        <table id="summaryTable" class="slds-table slds-table--bordered" style="width: 100%"> 
+        <tbody> 
+        <td style="width: 33%">       
+          <table >
+            <thead>
+              <th scope="col" style="text-align: center;"><b>{!$Label.c.Today_Label}</b></th>
+            </thead>
+            <table > 
+              <thead>        
+             		<th scope="col"><b>{!$Label.c.Leads_Label}</b></th>
+                <th></th>
+          		</thead>
+              <aura:iteration items="{!v.todayLeads}" var="leadToday" >
+                  
+             		<tr>
+                  <aura:if isTrue="{!leadToday.isMarked}">
+                  <td class="field_label" style="background:rgba(255,0,0, 0.7);">                     
+						<div><ui:outputText value="{!leadToday.label}" class="{!leadToday.url}" click="{!c.openListView}"/></div>                  	 
+                  </td>
+                  <td class="resultCol" style="background:rgba(255,0,0, 0.7);">
+                      {!leadToday.recordCount}
+                  </td>
+                  <aura:set attribute="else">
+                      <td class="field_label">                     
+						<div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!leadToday.label}" class="{!leadToday.url}" click="{!c.openListView}"/></div>                  	 
+                      </td>
+                      <td class="resultCol">
+                          {!leadToday.recordCount}
+                      </td>
+                  </aura:set>
+                  </aura:if>  
+                  
+                </tr>
+            	</aura:iteration> 
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Opportunities_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.todayOpps}" var="oppsToday" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!oppsToday.label}" class="{!oppsToday.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!oppsToday.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Cases_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.todayCases}" var="casesToday" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!casesToday.label}" class="{!casesToday.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!casesToday.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Tasks_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.todayTasks}" var="tasksToday" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!tasksToday.label}" class="{!tasksToday.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!tasksToday.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+            </table>
+          </table>
+        </td>
+
+
+        <td style="width: 33%">      
+          <table >
+            <thead>
+              <th scope="col" style="text-align: center;"><b>{!$Label.c.This_Week_Label}</b></th>
+            </thead>
+            <table> 
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Leads_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.thisWeekLeads}" var="leadThisWeek" >
+                <tr>
+                 <aura:if isTrue="{!leadThisWeek.isMarked}">
+                  <td class="field_label" style="background:rgba(255,0,0, 0.7);">
+                    <div><ui:outputText value="{!leadThisWeek.label}" class="{!leadThisWeek.url}" click="{!c.openListView}"/></div>                     
+                  </td>
+                  <td class="resultCol" style="background:rgba(255,0,0, 0.7);">
+                      {!leadThisWeek.recordCount}
+                  </td>
+                  <aura:set attribute="else">
+                      <td class="field_label">
+                    <div style="color: rgb(0, 112, 210);"><ui:outputText value="{!leadThisWeek.label}" class="{!leadThisWeek.url}" click="{!c.openListView}"/></div>                     
+                  </td>
+                  <td class="resultCol">
+                      {!leadThisWeek.recordCount}
+                  </td>
+                  </aura:set>
+                  </aura:if>
+                </tr>
+              </aura:iteration> 
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Opportunities_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.thisWeekOpps}" var="oppsThisWeek" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!oppsThisWeek.label}" class="{!oppsThisWeek.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!oppsThisWeek.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Cases_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.thisWeekCases}" var="casesThisWeek" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!casesThisWeek.label}" class="{!casesThisWeek.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!casesThisWeek.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Tasks_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.thisWeekTasks}" var="tasksThisWeek" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!tasksThisWeek.label}" class="{!tasksThisWeek.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!tasksThisWeek.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+            </table>
+          </table>
+        </td>
+
+
+
+        <td style="width: 33%">      
+          <table >
+            <thead>
+              <th scope="col" style="text-align: center;"><b>{!$Label.c.My_Work_Total_Label}</b></th>
+            </thead>
+            <table> 
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Leads_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.totalLeads}" var="leadTotal" >
+                <tr>
+                  <aura:if isTrue="{!leadTotal.isMarked}">
+                  <td class="field_label" style="background:rgba(255,0,0, 0.7);">
+                      <div><ui:outputText value="{!leadTotal.label}" class="{!leadTotal.url}" click="{!c.openListView}"/></div>                     
+                  </td>
+                  <td class="resultCol" style="background:rgba(255,0,0, 0.7);">
+                      {!leadTotal.recordCount}
+                  </td>
+                  <aura:set attribute="else">
+                  <td class="field_label">
+                      <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!leadTotal.label}" class="{!leadTotal.url}" click="{!c.openListView}"/></div>                     
+                  </td>
+                  <td class="resultCol">
+                      {!leadTotal.recordCount}
+                  </td>     
+                  </aura:set>
+                  </aura:if>
+                </tr>
+              </aura:iteration> 
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Opportunities_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.totalOpps}" var="oppsTotal" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!oppsTotal.label}" class="{!oppsTotal.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!oppsTotal.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Cases_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.totalCases}" var="casesTotal" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!casesTotal.label}" class="{!casesTotal.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!casesTotal.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+
+              <thead>        
+                <th scope="col"><b>{!$Label.c.Tasks_Label}</b></th>
+                <th></th>
+              </thead>
+              <aura:iteration items="{!v.totalTasks}" var="tasksTotal" >
+                <tr>
+                  <td class="field_label">
+                     <div style="color: rgb(0, 112, 210) ;"><ui:outputText value="{!tasksTotal.label}" class="{!tasksTotal.url}" click="{!c.openListView}"/></div>
+                  </td>
+                  <td class="resultCol">
+                      {!tasksTotal.recordCount}
+                  </td>
+                </tr>
+              </aura:iteration>
+            </table>
+          </table>
+        </td>
+        </tbody>
+        </table>
+   </div>
+   <ui:spinner aura:id="spinner" class="spinnerHeight"/>
+    
+</aura:component>

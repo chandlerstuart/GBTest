@@ -1,0 +1,107 @@
+<aura:component >
+    <aura:attribute type="Object" name="compareData"/>    
+    
+    <div class="slds-p-bottom_xx-small">
+        <aura:if isTrue="{!equals(v.compareData.dataType,'STRING')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'LONG')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}"  /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'TEXTAREA')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'PICKLIST')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'EMAIL')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>                       
+        </aura:if>  
+        <aura:if isTrue="{!equals(v.compareData.dataType,'DOUBLE')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedNumber value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedNumber value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="equals(v.compareData.dataType,'LONG')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}"/></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'PHONE')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedText value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'INTEGER')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedNumber value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedNumber value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'DATE')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedDateTime value="{!v.compareData.userInputValue}" /></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedDateTime value="{!v.compareData.existingRecordValue}" /></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+        <aura:if isTrue="{!equals(v.compareData.dataType,'DATETIME')}">
+            <lightning:layout multipleRows="false">
+                <lightning:layoutItem size="2"><p><b><lightning:formattedText value="{!v.compareData.fieldLabel}" /></b>:</p></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="userInputButton" iconName="{!(v.compareData.isOverwrite)? 'utility:like':'utility:replace'}" selected="{! v.compareData.isOverwrite }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedDateTime value="{!v.compareData.userInputValue}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                                                            minute="2-digit" timeZoneName="short" hour12="false"/></lightning:layoutItem>
+                <lightning:layoutItem size="1"><p><b><lightning:buttonIconStateful aura:id="existingValueButton" iconName="{!(not(v.compareData.isOverwrite))? 'utility:like':'utility:replace'}" selected="{! not(v.compareData.isOverwrite) }" onclick="{!c.toggleOverwrite}" /></b></p></lightning:layoutItem>
+                <lightning:layoutItem size="4"><lightning:formattedDateTime value="{!v.compareData.existingRecordValue}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                                                            minute="2-digit" timeZoneName="short" hour12="false"/></lightning:layoutItem>
+            </lightning:layout>
+        </aura:if> 
+    </div>
+</aura:component>

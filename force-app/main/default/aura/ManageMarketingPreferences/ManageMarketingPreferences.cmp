@@ -1,0 +1,75 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="ManageMarketingPreferencesController" access="global" >
+    <aura:attribute type="Individual" name="individual"/>
+    <aura:attribute type="Boolean" name="brochureOnPageLoad"/>
+    <aura:attribute type="Account" name="account"/>
+    <aura:attribute type="Boolean" name="isExpanded" default="false"/>
+    <aura:attribute type="Boolean" name="auditIsDue" default="false"/>
+    <aura:attribute type="String" name="fieldName"/>
+    <aura:attribute type="String" name="sObjectType"/>    
+    <aura:attribute type="String" name="errorMessage"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:handler action="{!c.onInit}" name="init" value="{!this}" />
+    <aura:attribute type="Boolean" name="isLoading" default="true"/>
+    <aura:attribute type="Boolean" name="savePromptRequired" default="false"/>
+    <aura:attribute type="Boolean" name="showOnAuditOnly" default="false"/>
+    <aura:attribute type="Integer" name="auditAfterDays" default="30"/>
+    <aura:attribute type="String" name="changeHistoryString" default="Manage Marketing Preferences"/>
+    <aura:handler event="c:MarketingPreferenceFormChangeEvent" name="changeEvent" action="{!c.handleChangeEvent}" />
+    <aura:registerEvent type="c:MarketingPreferenceFormChangeEvent" name="changeEvent" />
+    <aura:attribute type="String" name="workItemPhoneNumber"/>
+    <aura:attribute type="Boolean" name="isPhoneAuditRequired"/>
+    <aura:attribute type="String" name="workItemPhoneFieldName"/>
+    <aura:attribute type="String" name="phoneAuditMessage" default="Phone Audit Required: "/>
+    
+    <aura:if isTrue="{!v.isLoading}">
+        
+        <div class="demo-only" style="height: 6rem;"> 
+            <div role="status" class="slds-spinner slds-spinner_medium">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+        
+        <aura:set attribute="else">
+            <aura:if isTrue="{! empty(v.errorMessage)}">
+                <aura:if isTrue="{! or(!v.showOnAuditOnly,and(v.showOnAuditOnly,or(v.auditIsDue,v.isPhoneAuditRequired)))}">
+                    <lightning:layout multipleRows="true" class="slds-card">
+                        <span class="slds-box container">
+                            <div class="slds-card__header slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" style="background-color:rgba(57, 103, 13, 1);border-radius:5px 5px 0px 0px; padding:2px;">
+                                <span style="margin-bottom: 5px;margin-top: 5px">
+                                    <lightning:icon size="x-small" name="utility:news"/>
+                                    <lightning:formattedText value="Marketing Preferences" class=""/>
+                                </span>
+                            </div>   
+                            <!--Phone audit required-->
+                            <aura:if isTrue="{!v.isPhoneAuditRequired}">
+                                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                                    <span class="slds-assistive-text">warning</span>
+                                    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small whiteIcon" title="Description of icon when needed">
+                                        <lightning:icon iconName="utility:warning" size="x-small"/>
+                                    </span>
+                                    <h2><b> {!v.phoneAuditMessage} {!v.workItemPhoneNumber}</b></h2>
+                                </div>
+                            </aura:if>
+                            <!-- Preference Panel-->
+                            <lightning:layoutItem size="12">
+                                <c:MarketingPreferencePanel aura:id="preferencePanel" individual="{!v.individual}" account="{!v.account}" isExpanded="{!v.isExpanded}" auditIsDue="{!v.auditIsDue}" savePromptRequired="{!v.savePromptRequired}"/>
+                            </lightning:layoutItem>
+                            
+                            <!-- Contact Details -->
+                            <lightning:layoutItem size="12">
+                                <c:MarketingPreferencesForm isPhoneAuditRequired="{!v.isPhoneAuditRequired}" workItemPhoneNumber="{!v.workItemPhoneNumber}" individual="{!v.individual}" account="{!v.account}" isExpanded="{!v.isExpanded}" auditIsDue="{!v.auditIsDue}" savePromptRequired="{!v.savePromptRequired}" changeHistoryString="{!v.changeHistoryString}" brochureOnPageLoad="{!v.brochureOnPageLoad}"/>
+                            </lightning:layoutItem>
+                        </span>
+                    </lightning:layout>
+                </aura:if>
+                
+                <aura:set attribute="else">
+                    <lightning:formattedText value="{!v.errorMessage}" class="slds-align_absolute-center"/>        
+                </aura:set>
+            </aura:if>
+            
+        </aura:set>
+    </aura:if>
+</aura:component>

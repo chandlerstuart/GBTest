@@ -1,0 +1,39 @@
+<aura:component >
+    <aura:attribute name="quotes" type="OppQuoteManagementController.QuoteWrapper[]"/>
+    <aura:attribute name="oppRecord" type="OppQuoteManagementController.OppWrapper"/>
+    
+    <aura:handler name="quoteUpdated" event="c:OppQuoteEvent" action="{!c.handleQuoteUpdate}"/>
+    
+    <div class="slds-grid slds-wrap slds-grid--pull-padded">
+    <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--medium"> <!--Start of 3rd Row-->
+        <div class="slds-text-heading--small slds-text-align--left slds-box slds-theme--inverse"> 
+            Quotes in Display Order
+        </div>
+    </div>
+    </div>
+    
+    <div class="slds-col--padded slds-p-around--medium"> <!-- Start of 3rd Row -->
+        <div class="slds-grid slds-grid--vertical-align-left slds-grid--align-left">
+            <button onclick="{!c.selectAll}" class="slds-button slds-button--brand slds-theme--inverse">Select All</button>
+            <button onclick="{!c.deSelectAll}" class="slds-button slds-button--brand slds-theme--inverse">Deselect All</button>
+        </div>
+    </div>
+    
+    <div class="slds-grid slds-wrap slds-grid--pull-padded">
+    <!-- VERSION 2 -->
+    <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--5-of-6 slds-large-size--8-of-12">
+        <ul class="slds-col--padded">
+        <aura:iteration items="{!v.quotes}" var="q">
+            <c:OppQuoteInfo quote="{!q}" quoteSize="{!v.quotes.length}"/>    
+        </aura:iteration>
+        </ul>
+    </div>
+    <!-- / VERSION 2 -->
+   
+    <!-- VERSION 1 -->
+    <!-- VERSION 1 CODE GOES HERE -->  
+    <!-- / VERION 1 -->
+    
+        
+    </div>
+</aura:component>

@@ -1,0 +1,45 @@
+.THIS {
+}
+.THIS .alert svg{
+    fill:  #ff9900 !important; 
+}
+.THIS .subscribed svg{
+    fill: rgb(100 180 45);
+}
+.THIS .unsubscribed svg{
+    fill:  rgb(194, 57, 52);
+}
+.THIS .chevronColour svg{
+    fill: #d9d9d9;
+}
+.THIS .slds-theme_info{
+    background-color: #9b9b9b;
+    height: 2rem;
+}
+.THIS .slds-notify_alert{
+    height: 2rem;
+}
+.THIS .whiteIcon svg{
+    fill:white;
+}
+.THIS .expandOrCollapseSection{
+    padding-top: 15px;
+}
+.THIS .slds-size_1-of-12.icons{
+    min-width: 1em;
+} 
+.THIS .slds-large-size_1-of-12.icons{
+    min-width: 1em;
+}
+.THIS .slds-col{
+    min-width:57px;
+}
+.THIS .slds-text-body_small{
+    font-size:0.7rem;
+}
+.THIS .slds-button{
+    width:100px;
+}
+.THIS .icon-section{
+    margin-left:-18px;
+}

@@ -1,0 +1,44 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:attribute type="String" name="recordId"/>
+    <aura:attribute type="String" name="new"/>
+    <aura:attribute type="String" name="newColour" default="#ffffff"/>
+    <aura:attribute type="String" name="booker"/>
+    <aura:attribute type="String" name="bookerColour" default="#98cc74"/>
+    <aura:attribute type="String" name="enquirer"/>
+    <aura:attribute type="String" name="enquirerColour" default="#f2c36d"/>
+    <aura:attribute type="String" name="bannerColour" default="background-color:white"/>
+    <aura:attribute type="String" name="bannerText"/>
+    <aura:attribute name="accountRecord" type="Object"/>
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="TotalBookingsCount__c,TotalOpportunitiesCount__c"
+                      targetFields="{!v.accountRecord}"
+                      targetError="{!v.recordLoadError}"
+                      recordUpdated="{!c.handleRecordUpdated}"
+                      mode="VIEW"
+                      />
+    
+    <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+        <div class="slds-card slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error">
+            <span class="slds-assistive-text"></span>
+            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small">
+                <lightning:icon iconName="utility:bear"/>
+            </span>
+            <h2>{!v.recordLoadError}</h2>
+        </div>
+        
+        <aura:set attribute="else">
+            
+            <div class="slds-card slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" style="{!v.bannerColour}">
+                <span class="slds-assistive-text"></span>
+                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small">
+                    <lightning:icon iconName="utility:bear"/>
+                </span>
+                <h2><b>{!v.bannerText}</b></h2>
+            </div>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

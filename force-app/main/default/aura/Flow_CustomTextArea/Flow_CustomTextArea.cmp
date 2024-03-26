@@ -1,0 +1,10 @@
+<aura:component  implements="lightning:availableForFlowScreens" access="global">
+    <aura:attribute name="isReadOnly" type="Boolean" default="false"/>
+    <aura:attribute name="value" type="String" />
+    <aura:attribute name="label" type="String" default="Text Box"/>
+    <aura:attribute name="size" type="String" default="medium"/>
+    
+    <!-- READ ONLY REGULAR TEXT -->
+    <lightning:textarea aura:id="text" readonly="{!v.isReadOnly}" value="{!v.value}" label="{!v.label}" class="{!v.size}"/>
+    
+</aura:component>

@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="successMessage" label="Success Message" description="Input - Optional success message to display in a Success Toast Message once the user's Status is updated successfully. Leave blank if you would prefer to not fire a toast message." />
+	<design:attribute name="isSuccess" label="isSuccess" description="Output - The component will set this to true or false depending on the success of the status update." />
+	<design:attribute name="errorMessage" label="Error Message" description="Output - The Error returned by the component if the update was unsuccessful (isSuccess is false)." />
+    <design:attribute name="omniStatusId" label="Omni Status Id" description="Input - Required - The Id (starting '0N5')  of the Omni Channel Status (ServicePresenceStatus)." required="true"/>
+</design:component>

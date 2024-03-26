@@ -1,0 +1,191 @@
+<aura:component controller="LC04_LeadConvertProcessor" implements="force:appHostable">
+    <aura:dependency resource="markup://force:navigateToSObject" type="EVENT"/>
+    <ltng:require scripts="/support/console/22.0/integration.js"/>
+    <aura:attribute type="Lead" name="leadRecord" />    
+    <aura:attribute type="Boolean" name="isConverted"/>
+    <aura:attribute type="String" name="createdDate"/>
+    <aura:attribute type="String" name="oppName" default="{!v.leadRecord.LastName + ' - ' + v.leadRecord.SalesRegion__c}"/>
+    <aura:attribute type="String" name="convertedAcn" default="{!v.leadRecord.Account__r.Name}"/>
+    <aura:attribute type="String" name="convertedOpp" />
+    <aura:attribute type="String" name="convertedAcnId" default="{!v.leadRecord.ConvertedAccountId}"/>
+    <aura:attribute type="String" name="convertedOppId" default="{!v.leadRecord.ConvertedOpportunityId}"/>
+    <aura:attribute type="String" name="conversionErrors" />
+    <aura:attribute type="Id" name="leadRecordId" default="{!v.leadRecord.Id}"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+    <aura:renderIf isTrue="{!(v.isConverted == false)}" >
+    <div id="convertGrid" class="slds-grid slds-wrap slds-grid--pull-padded"> <!-- Start of Grid -->
+        <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--medium"> <!--Start of 1st Row-->
+            <div class="slds-text-heading--small slds-text-align--left slds-box slds-theme--inverse"> 
+                Lead Details 
+            </div>
+        </div> <!-- End of 1st Row-->
+        <div class="slds-col--padded slds-size--1-of-2 slds-p-around--small ">   <!-- 1st column-->
+            <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--large ">   
+                <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                    <div class="slds-text-heading--label slds-text-align--left"> 
+                        Account Name: <b><a href="javascript:void(0)" onclick="{!c.selectAccount}" data-id="{!v.leadRecord.Account__c}" data-name="{!v.leadRecord.AccountName__c}">{!v.leadRecord.AccountName__c}</a></b>
+                    </div>       
+                </div>
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1 slds-p-around--large ">   
+                <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                    <div class="slds-text-heading--label slds-text-align--left"> 
+                        First Name: <b>{!v.leadRecord.FirstName}</b>
+                    </div>       
+                </div>
+            </div>
+            <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--large ">   
+                <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                    <div class="slds-text-heading--label slds-text-align--left"> 
+                        Last Name: <b>{!v.leadRecord.LastName}</b>
+                    </div>       
+                </div>
+            </div>
+            <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--large ">   
+                <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                    <div class="slds-text-heading--label slds-text-align--left"> 
+                        Email: <b>{!v.leadRecord.Email}</b>
+                    </div>       
+                </div>
+            </div>
+            <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--large ">   
+                <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                    <div class="slds-text-heading--label slds-text-align--left"> 
+                        Mobile: <b>{!v.leadRecord.MobilePhone} </b> 
+                    </div>       
+                </div>
+            </div>
+        </div> <!-- End of 1st Column-->
+        
+        
+        <div class="slds-col--padded slds-size--1-of-2 slds-p-around--small ">   <!-- 2nd column-->
+            <div class="slds-col--padded slds-size--1-of-1  slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    Nights: <b>{!v.leadRecord.Nights__c}</b>
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1  slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    Preferred Travel Date: <b>{!v.leadRecord.PreferredTravelDate__c}</b>
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1  slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    Travel Group Size: <b>{!v.leadRecord.TravelGroupSize__c}</b>
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1 slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    Sales Region: <b>{!v.leadRecord.SalesRegion__c}</b>
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1  slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    
+                    <!-- Venue Text Area -->
+                    <span class="slds-form-element__label">Venue:</span> 
+                    <div class="slds-form-element__control slds-has-divider--bottom"> 
+                        <div class="slds-form-element__static slds-text-longform">
+                            <p><b>{!v.leadRecord.Venue__c}</b></p>
+                        </div>
+                    </div> 
+                    
+                    <!-- Venue: <b>{!v.leadRecord.Venue__c}</b> -->
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1  slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    GolfBreaks Campaign ID: <b>{!v.leadRecord.GolfBreaks_Campaign_ID__c} </b> 
+                    <!--<b>{!v.CampaignMemRecord.Campaign.Name}</b> -->
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1  slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    Newsletter Sign Up: <b>{!v.leadRecord.NewsletterSignUp__c}</b>
+                </div>    
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1 slds-p-around--small ">   
+                <div class="slds-text-heading--label slds-text-align--left slds-box slds-theme--shade slds-box--small"> 
+                    
+                    <!-- Additional Information Text Area -->
+                    <span class="slds-form-element__label">Additional Information:</span> 
+                    <div class="slds-form-element__control slds-has-divider--bottom">
+                        <div class="slds-form-element__static slds-text-longform">
+                            <p><b>{!v.leadRecord.AdditionalInformation__c}</b></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Information: <b>{!v.leadRecord.AdditionalInformation__c}</b> -->
+                </div>    
+            </div>
+        </div> <!-- End of 2nd Column-->
+        
+        
+        <div class="slds-col--padded  slds-size--1-of-1 slds-p-around--medium"> <!--Start of 3rd Row-->
+            <div class="slds-text-heading--small slds-text-align--left slds-box slds-theme--inverse"> 
+                Opportunity Details 
+            </div>
+        </div> <!-- End of 3rd Row-->
+        <div class="slds-col--padded slds-size--1-of-1 slds-p-around--small ">   <!-- 1st column-->
+            <div class="slds-col--padded  slds-size--1-of-2 slds-p-around--large ">   
+                <div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+                    <div class="slds-text-heading--label "> 
+                        Opportunity Name: 
+                        <div class="slds-form-element__control slds-box--x-small">
+                            <!--<input onchange="{!c.setOppName}" value="{!v.oppName}" id="text-input-04" 
+                                   class="slds-input" type="text" placeholder="Enter Opportunity Name" /> -->
+                            <ui:outputText class="slds-input" value="{!v.leadRecord.FirstName + ' ' + v.leadRecord.LastName + ' ' + v.createdDate}"/>
+                        </div>
+                    </div>       
+                </div>
+            </div>
+        </div> <!-- End of 1st Column-->          
+    </div> <!-- End of Grid -->
+    </aura:renderIf>
+    
+    <!--<aura:renderIf isTrue="{!v.isConverted}">
+    <div id="personAcntGrid" class="slds-grid slds-wrap slds-grid-/-pull-padded" >
+        <c:PersonAccountComponent newOppName="{!v.convertedOpp}" 
+                                  newAccntName="{!v.convertedAcn}" 
+                                  newAccntId="{!v.convertedAcnId}"
+                                  newOppId="{!v.convertedOppId}"
+                                  isConverted="{!v.isConverted}"
+                                  />
+    </div>
+    </aura:renderIf>-->
+    
+    <aura:renderIf isTrue="{!!v.isConverted}">
+    <div id="errorMsg" class="slds-hide">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-modal--prompt slds-fade-in-open">
+            <div class="slds-modal__container slds-modal--prompt">
+                <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+                    <h2 class="slds-text-heading--medium">Service Unavailable</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div>                        
+                        <p>{!v.conversionErrors}</p>
+                    </div>
+                </div>
+                <div class="slds-modal__footer slds-theme--default">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.closeErrorMessage}">Okay</button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </div>
+    <center>
+        <div id="spinner" class="slds-modal slds-fade-in-open" aria-hidden="false" role="dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around--medium" style = "box-shadow: 0px 2px 6px rgba(0,0,0,0.7);">
+                    <div class="slds-spinner--large">
+                        <img src="/resource/slds090/assets/images/spinners/slds_spinner.gif" onload="{!c.proceedLeadConvert}" id="{!v.leadRecordId}" alt="Loading..."/>
+                        
+                    </div>
+                    <ui:outputText class="noRecordsFound" value="Converting Lead. Please wait.."/>
+                </div>
+            </div>
+        </div>
+    </center>
+    </aura:renderIf>
+</aura:component>

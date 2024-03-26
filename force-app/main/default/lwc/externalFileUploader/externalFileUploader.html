@@ -1,0 +1,52 @@
+<template>
+  <template if:true={isNewDoc}>
+    <lightning-card title="Upload External File" class="card-title">
+        <template if:false={expanded}>
+          <lightning-button label="Add File" slot="actions" onclick={expandOrCollapse}></lightning-button>
+        </template>
+        <template if:true={expanded}>
+          <lightning-button label="Cancel" slot="actions" onclick={expandOrCollapse}></lightning-button>
+          <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <lightning-input label="File Name" type="text" value={fileName} onchange={handleNameChange}></lightning-input>
+            <lightning-textarea label="Description" value={fileDescription} onchange={handleDescriptionChange}></lightning-textarea>
+            <template if:true={isLoading}>
+              <div class="slds-spinner_container">
+                <lightning-spinner variant="brand" size="large"></lightning-spinner>
+              </div>
+            </template>
+            <template if:false={isLoading}>
+              <template if:true={showFileUpload}> 
+                <lightning-file-upload
+                  label="Upload a File" 
+                  accept={acceptedFormats}
+                  onuploadfinished={handleUploadFinished}
+                  record-id={recordId}
+                  class="slds-align_absolute-center slds-m-bottom_large"
+                ></lightning-file-upload>
+              </template>
+            </template>
+          </div>
+        </template>
+    </lightning-card>
+  </template>
+  <template if:false={isNewDoc}>
+    <lightning-card title="Update External File" class="card-title">
+      <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+        <template if:true={isLoading}>
+          <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="large"></lightning-spinner>
+          </div>
+        </template>
+        <template if:false={isLoading}>
+          <lightning-file-upload
+            label="Upload a File" 
+            accept={acceptedFormats}
+            onuploadfinished={handleUploadFinished}
+            record-id={recordId}
+            class="slds-align_absolute-center slds-m-bottom_large"
+          ></lightning-file-upload>
+        </template>
+      </div>
+    </lightning-card>
+  </template>
+</template>

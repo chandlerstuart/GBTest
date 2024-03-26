@@ -1,0 +1,6 @@
+<design:component>
+    <design:attribute label="Account Field API Name" name="fieldName" description="The API name of the field contaiining the Client Account Id" />
+    <design:attribute label="Object API Name" name="sObjectType" description="The API name of the record's sObject type i.e. Booking__c, Case etc. This negates the need for it to be calculate by the component, which significantly increases its performance" />
+	<design:attribute label="SLDS Icon" name="iconName" description="Specify the name of the SLDS icon in the following format: Icon Type : Icon Name (i.e. standard:opportunity). See https://www.lightningdesignsystem.com/icons/ for full list of available icons "/>
+    <design:attribute label="Button Label" name="label"/>
+</design:component>

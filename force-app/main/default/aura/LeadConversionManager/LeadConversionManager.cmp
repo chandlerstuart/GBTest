@@ -1,0 +1,29 @@
+<aura:component controller="LC04_LeadConvertProcessor">
+    <aura:attribute type="Lead" name="leadRecord" />
+    <aura:attribute type="CampaignMember" name="CampaignMemRecord" />
+    <aura:attribute type="Object" name="convertResult" />
+    <aura:attribute type='String' name="vfleadId" />
+    <aura:attribute type='String' name="createdDate" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <div class="slds">
+        <aura:if isTrue="{! !v.convertResult}">
+            <!-- <div class="slds-page-header">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        
+                        <div class="slds-grid">
+                            <div class="slds-grid slds-type-focus slds-no-space ">
+                                <h1 class="slds-text-heading -large slds-truncate" title="Lead Information" >
+                                    Lead Navigation
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div> -->
+            <c:LeadInformation leadRecordId="{!v.vfleadId}" leadRecord="{!v.leadRecord}" isConverted="{!v.leadRecord.IsConverted}" createdDate="{!v.createdDate}"/>
+        </aura:if>
+    </div>
+</aura:component>

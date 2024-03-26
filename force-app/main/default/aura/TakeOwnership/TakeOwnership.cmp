@@ -1,0 +1,21 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForRecordHome">
+    <aura:attribute name="record" type="Object"/>
+    <aura:attribute name="complete" type="Boolean" default="false" />
+    <aura:attribute name="alreadyOwned" type="Boolean" default="false"/>
+    <aura:attribute name="buttonClicked" type="Boolean" default="false"/>
+    <force:recordData recordId="{!v.recordId}"
+                      fields="['OwnerId']"
+                      targetFields="{!v.record}"
+                      aura:id="recordData"
+                      recordUpdated="{!c.recordLoaded}"
+                      mode="EDIT"/> 
+    
+    <aura:if isTrue="{!v.alreadyOwned == false}">
+        <button class="slds-button slds-button_brand" disabled="{!v.buttonClicked}" style="width:100%;height:40px" onclick="{!c.takeOwnership}">
+            <lightning:icon iconName="utility:change_owner" size="small" variant="inverse"/>
+            &nbsp;
+            Take Ownership
+        </button>
+    </aura:if>
+    
+</aura:component>

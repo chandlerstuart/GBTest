@@ -1,0 +1,9 @@
+<design:component>
+    <design:attribute label="Account Field API Name" name="fieldName" description="The API name of the field contaiining the Client Account Id" />
+    <design:attribute label="Object API Name" name="sObjectType" description="The API name of the record's sObject type i.e. Booking__c, Case etc. This negates the need for it to be calculate by the component, which significantly increases its performance" />
+	<design:attribute label="Hide until audit" name="showOnAuditOnly" description="If selected the component will only appear if the audit is required" />
+    <design:attribute label="Audit After (Days)" name="auditAfterDays" description="The number of days after the last audit that a follow up audit is required"/>
+    <design:attribute label="Change History Text" name="changeHistoryString" description="The text that will appear in the change history (log) for all changes made to the client's marketing preferences (for auditing purposes)"/>
+    <design:attribute label="Phone Audit Field Name" name="workItemPhoneFieldName" description="The API Name of the Phone Field to compare with the Account Phone Numbers as part of the Audit Process. A warning will be displayed if the phone number in this field is not set on the Account"/>
+	<design:attribute label="Phone Audit Message" name="phoneAuditMessage" description="The message displayed to an agent when a phone audit is required. Note - The number will be appended to this message"/>
+</design:component>

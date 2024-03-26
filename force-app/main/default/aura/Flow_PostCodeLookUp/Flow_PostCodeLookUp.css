@@ -1,0 +1,11 @@
+.THIS {
+}
+
+.THIS .editButton{
+    padding-left:0rem;
+    border:none;
+    background-color:transparent;
+}
+.THIS .closeModal svg{
+    fill:white;
+}

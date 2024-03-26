@@ -1,0 +1,15 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId">
+
+    <aura:attribute type="String" name="recordId"/>
+    <aura:attribute type="String" name="source"/>
+    <aura:attribute type="String" name="url"/>
+
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}"/>
+
+    <aura:if isTrue="{!not(empty(v.source))}">
+        <iframe src="{!v.source}" width="100%" height="500px;" frameBorder="0"/>
+        <aura:set attribute="else">
+            <lightning:formattedText value="Please provide a valid URL"/>
+        </aura:set>
+    </aura:if>
+</aura:component>

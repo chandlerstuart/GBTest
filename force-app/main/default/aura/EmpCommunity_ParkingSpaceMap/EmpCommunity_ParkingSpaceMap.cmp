@@ -1,0 +1,209 @@
+<aura:component controller="EmpCommunity_ParkingController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="parkingSpaces" type="EmpCommunity_ParkingController.ParkingWrapper[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <aura:attribute name="userRecord" type="User"/>
+    <aura:registerEvent name="getUsers" type="c:EmpCommunity_UserListEvent"/>
+    <aura:handler name="spaceUpdated" event="c:EmpCommunity_SpaceAssignedEvent" action="{!c.handleUpdateEvent}"/>
+    
+    <style type="text/css">
+    table, th, td {
+    	border: 1px solid black;
+        text-align: center;
+	}
+    td {
+  		padding-top: 20px;
+ 		padding-bottom: 20px;
+        width: 15%;
+	}
+    td.deadspace {
+    	background-color: lightgrey;    
+    }
+    td.header {
+    	border: 0px;
+	}
+    
+    </style>
+    <center>
+        <div id="spinner" class="slds-modal slds-fade-in-open " aria-hidden="false" role="dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around--medium" style = "box-shadow: 0px 2px 6px rgba(0,0,0,0.7);">
+                    <div class="slds-spinner--large">
+                        <img src="{!$Resource.LoadingSpinner}" alt="Loading..."/>
+                    </div>
+                    <ui:outputText class="noRecordsFound" value="Loading..."/>
+                </div>
+            </div>
+        </div>
+    </center>
+    
+	<div align="center">
+        <!-- MAIN TABLE 17 ROWS 5 COLUMNS -->
+        <table width="70%" cellpadding="20" id="mainTable">
+        	<thead>
+            
+        	</thead>
+        	<tbody>
+                <tr>
+                    <td class="header"><ui:button press="{!c.findMySpace}" label="Where's my space?"/></td>
+	                <td colspan="5" class="header">Parking Spaces at Minton Place</td></tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td class="deadspace"></td>
+                    <td class="deadspace">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td id="ps179"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="179" aura:id="ps179"/></td>
+                    <td id="ps180"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="180" aura:id="ps180"/></td>
+                    <td class="deadspace"></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td class="deadspace"></td>
+                    <td class="deadspace"></td>
+                    <td id="ps178"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="178" aura:id="ps178"/></td>
+                    <td id="ps181"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="181" aura:id="ps181"/></td>
+                    <td id="ps212"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="212" aura:id="ps212"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps152"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="152" aura:id="ps152"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps177"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="177" aura:id="ps177"/></td>
+                    <td id="ps182"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="182" aura:id="ps182"/></td>
+                    <td id="ps211"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="211" aura:id="ps211"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps153"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="153" aura:id="ps153"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps176"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="176" aura:id="ps176"/></td>
+                    <td id="ps183"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="183" aura:id="ps183"/></td>
+                    <td id="ps210"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="210" aura:id="ps210"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps154"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="154" aura:id="ps154"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps175"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="175" aura:id="ps175"/></td>
+                    <td id="ps184"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="184" aura:id="ps184"/></td>
+                    <td id="ps209"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="209" aura:id="ps209"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps155"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="155" aura:id="ps155"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps174"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="174" aura:id="ps174"/></td>
+                    <td id="ps185"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="185" aura:id="ps185"/></td>
+                    <td id="ps208"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="208" aura:id="ps208"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps156"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="156" aura:id="ps156"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps173"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="173" aura:id="ps173"/></td>
+                    <td id="ps186"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="186" aura:id="ps186"/></td>
+                    <td id="ps207"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="207" aura:id="ps207"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps157"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="157" aura:id="ps157"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps172"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="172" aura:id="ps172"/></td>
+                    <td id="ps187"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="187" aura:id="ps187"/></td>
+                    <td id="ps206"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="206" aura:id="ps206"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps158"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="158" aura:id="ps158"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps171"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="171" aura:id="ps171"/></td>
+                    <td id="ps188"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="188" aura:id="ps188"/></td>
+                    <td id="ps205"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="205" aura:id="ps205"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps159"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="159" aura:id="ps159"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps170"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="170" aura:id="ps170"/></td>
+                    <td id="ps189"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="189" aura:id="ps189"/></td>
+                    <td id="ps204"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="204" aura:id="ps204"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps160"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="160" aura:id="ps160"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps169"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="169" aura:id="ps169"/></td>
+                    <td id="ps190"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="190" aura:id="ps190"/></td>
+                    <td id="ps203"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="203" aura:id="ps203"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td id="ps161"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="161" aura:id="ps161"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps168"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="168" aura:id="ps168"/></td>
+                    <td id="ps191"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="191" aura:id="ps191"/></td>
+                    <td id="ps202"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="202" aura:id="ps202"/></td>
+                </tr>
+                <tr>
+                    <td id="ps131"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="131" aura:id="ps131"/></td>
+                    <td id="ps162"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="162" aura:id="ps162"/></td>
+                    <td class="deadspace"></td>
+                    <td id="ps167"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="167" aura:id="ps167"/></td>
+                    <td id="ps192"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="192" aura:id="ps192"/></td>
+                    <td id="ps201"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="201" aura:id="ps201"/></td>
+                </tr>
+                <!-- LIFT -->
+                <tr>
+                    <td id="ps132"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="132" aura:id="ps132"/></td>
+                    <td class="deadspace">LIFT</td>
+                    <td class="deadspace"></td>
+                    <td id="ps166"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="166" aura:id="ps166"/></td>
+                    <td id="ps193"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="193" aura:id="ps193"/></td>
+                    <td id="ps200"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="200" aura:id="ps200"/></td>
+                </tr>
+                <tr>
+                    <td id="ps133"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="133" aura:id="ps133"/></td>
+                    <td class="deadspace">LIFT</td>
+                    <td class="deadspace"></td>
+                    <td id="ps165"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="165" aura:id="ps165"/></td>
+                    <td id="ps194"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="194" aura:id="ps194"/></td>
+                    <td id="ps199"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="199" aura:id="ps199"/></td>
+                </tr>
+                <tr>
+                    <td id="ps134"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="134" aura:id="ps134"/></td>
+                    <td class="deadspace"></td>
+                    <td class="deadspace"></td>
+                    <td id="ps164"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="164" aura:id="ps164"/></td>
+                    <td id="ps195"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="195" aura:id="ps195"/></td>
+                    <td id="ps198"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="198" aura:id="ps198"/></td>
+                </tr>
+                <tr>
+                    <td class="deadspace"></td>
+                    <td class="deadspace">STAIRS</td>
+                    <td class="deadspace"></td>
+                    <td id="ps163"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="163" aura:id="ps163"/></td>
+                    <td id="ps196"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="196" aura:id="ps196"/></td>
+                    <td id="ps197"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="197" aura:id="ps197"/></td>
+                </tr>
+        	</tbody>
+        </table>
+        <br/><br/><br/>
+        <!-- MAIN TABLE 17 ROWS 5 COLUMNS -->
+        <table width="75%" cellpadding="20">
+            <thead>
+            
+            </thead>
+            <tbody>
+            <tr>
+            	<td id="ps233"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="233" aura:id="ps233"/></td>
+                <td id="ps232"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="232" aura:id="ps232"/></td>
+                <td id="ps231"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="231" aura:id="ps231"/></td>
+                <td id="ps230"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="230" aura:id="ps230"/></td>
+                <td id="ps229"><c:EmpCommunity_ParkingSpace userRecord="{!v.userRecord}" spaceId="229" aura:id="ps229"/></td>
+            </tr>    
+            </tbody>
+        </table>
+        <br/><br/>
+    </div>    
+</aura:component>

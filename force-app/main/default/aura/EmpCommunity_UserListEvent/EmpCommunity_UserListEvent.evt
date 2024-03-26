@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="Event fired when User List is updated">
+    <aura:attribute name="userList" type="EmpCommunity_ParkingController.UserWrapper[]"/>
+</aura:event>

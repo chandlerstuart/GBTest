@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Communication Event for Opp Quote Info">
+    <aura:attribute name="quote" type="OppQuoteManagementController.QuoteWrapper"/>
+    <aura:attribute name="direction" type="String"/>
+</aura:event>

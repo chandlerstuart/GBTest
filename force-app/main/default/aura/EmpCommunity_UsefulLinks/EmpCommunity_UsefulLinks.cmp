@@ -1,0 +1,46 @@
+<aura:component controller="EmpCommunity_UsefulLinkController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <style type="text/css">
+    	.link-img {
+        	max-width:100px;
+		    max-height:100px;
+        }
+    </style>
+    <aura:attribute name="usefulLinks" type="EmpCommunity_UsefulLinkController.UsefulLinkWrapper[]"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    
+    <h3 class="base-items-header"><strong>USEFUL LINKS</strong></h3>
+    <br/>
+    <div>
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <tbody>
+        <div aura:id="errorDiv"></div>
+        <aura:renderIf isTrue="{!v.usefulLinks.length > 0}">
+	    <aura:iteration items="{!v.usefulLinks}" var="link">
+            <aura:renderIf isTrue="{!link.linkImage != null}">
+            	<tr>
+                    <!-- <td class="slds-truncate" title="{!link.Label__c}"><a href="{!link.URL__c}" target="_blank"><ui:outputURL value="/servlet/servlet.FileDownload?file=00P26000001bM27EAE"/></a></td> -->
+                    <td class="slds-truncate" title="{!link.linkLabel}">
+                        <a href="{!link.linkURL}" target="{!link.target}"><img class="link-img" src="{!link.linkImage}" title="{!link.linkDescription}"/></a>
+                    </td>
+                    <!-- <td class="slds-truncate">{!link.linkDescription}</td> -->
+            	</tr>
+            </aura:renderIf>
+            <aura:renderIf isTrue="{!link.linkImage == null}">
+                <tr>
+                    <td class="slds-truncate" title="{!link.linkLabel}"><a href="{!link.linkURL}" target="{!link.target}" title="{!link.linkDescription}">{!link.linkLabel}</a></td>
+                    <!-- <td class="slds-truncate">{!link.linkDescription}</td> -->
+                </tr>
+            </aura:renderIf>
+            
+	    </aura:iteration>
+        </aura:renderIf>
+        <aura:renderIf isTrue="{!v.usefulLinks.length == 0}">
+        	<tr>
+            	<td colspan="3">No items to display</td>
+            </tr>    
+        </aura:renderIf>
+        </tbody>
+    </table>
+    </div>
+</aura:component>

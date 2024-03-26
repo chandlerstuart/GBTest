@@ -1,0 +1,51 @@
+<aura:component controller="LC04_LeadConvertProcessor" implements="force:appHostable">
+  <aura:attribute type="String" name="newOppName"/>
+  <aura:attribute type="String" name="newAccntName"/>
+  <aura:attribute type="String" name="newOppId"/>
+  <aura:attribute type="Account" name="newAccntId"/>
+  <ltng:require styles="/resource/slds090/assets/styles/salesforce-lightning-design-system-vf.css"/> 
+
+	<div class="slds-grid slds-wrap slds-grid--pull-padded"> <!-- Start of Grid -->
+    	
+        <div class="slds-col--padded  slds-size--11-of-12 slds-p-around--medium"> <!--Start of 1st Row-->
+        	<div class="slds-text-heading--small slds-text-align--left slds-box slds-theme--inverse"> 
+                Account and Opportunity Details 
+            </div>
+    	</div> <!-- End of 1st Row-->
+        
+        
+        <div class="slds-col--padded slds-size--1-of-2 slds-p-around--small ">   <!-- 1st column-->
+    		
+            <div class="slds-col--padded  slds-size--12-of-12 slds-p-around--large ">   
+            	<div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small ">   
+    				<div class="slds-text-heading--label slds-text-align--left"> 
+                        Account: 
+                        <a href="javascript:void(0)" onclick="{!c.openAccount}" data-id="{!v.newAccntId}">{!v.newAccntName}</a>
+                    </div>       
+    			</div>
+    		</div>
+    
+        </div> <!-- End of 1st Column-->
+        
+      
+        
+        <div class="slds-col--padded slds-size--1-of-2 slds-p-around--small ">   <!-- 2nd column-->
+    		
+    	<div class="slds-col--padded  slds-size--1-of-1 slds-p-around--large ">   
+            	<div class="slds-col--padded  slds-p-around--small slds-box slds-theme--shade slds-box--small">   
+    				<div class="slds-text-heading--label slds-text-align--left"> 
+                            Opportunity: 
+                        <a href="javascript:void(0)" onclick="{!c.openOpp}" data-id="{!v.newOppId}">{!v.newOppName}</a>
+                        <img onload="{!c.getAccOppJS}"/>
+                    </div>       
+    			</div>
+    		</div>
+        
+       
+        </div> <!-- End of 2nd Column-->
+    
+     
+    </div> <!-- End of Grid -->
+        
+
+</aura:component>

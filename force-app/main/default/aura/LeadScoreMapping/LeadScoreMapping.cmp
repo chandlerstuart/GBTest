@@ -1,0 +1,150 @@
+<aura:component controller="LC02_MappingLightningController" access="global">
+    <aura:attribute name="leadScoreMapping" type="LeadScoreMapping__c" default="{ 'sobjectType': 'LeadScoreMapping__c',
+                                                                              'Name': '',
+                                                                              'LeadRating__c': '',
+                                                                              'LeadScoreMaximumValue__c': '',
+                                                                              'LeadScoreMinimumValue__c': '',
+                                                                              'RuleType__c': '',
+                                                                              'CasePriority__c':''}"/>
+    <aura:attribute name="leadScoreMappings" type="LeadScoreMapping__c[]"/>
+    <aura:attribute name="ruleSelected" type="String" default="Lead"/>
+    <aura:attribute name="errorMsg" type="String" default=""/>
+    <aura:attribute name="infoMsg" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    
+    <ltng:require styles="/resource/SLDS090/assets/styles/salesforce-lightning-design-system-ltng.css" />
+    <c:messages errorMsg="{!v.errorMsg}" infoMsg="{!v.infoMsg}"/>    
+    <div class="sdls">
+        	<div class="container">
+            	<form class="slds-form">
+                    <div class="slds-grid">
+                        <div class="slds-col--padded slds-size--1-of-4">
+                        </div>
+                        <div class="slds-col--padded slds-size--2-of-4">
+                            <p class="slds-text-body--large slds-page-header__info">INFORMATION</p>
+                            <div class="slds-form-element slds-is-required paddingTop">
+                                <div class="slds-form-element__control">
+                                    <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" required="true" 
+                                                    aura:id="ruletypeBox" label="Rule Type: " change="{!c.ruleChanged}" value="{!v.ruleSelected}">
+                                        <ui:inputSelectOption text="Lead"/>
+                                        <ui:inputSelectOption text="Case"/>
+                                    </ui:inputSelect>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-is-required paddingTop">
+                                <div class="slds-form-element__control">
+                                    	<ui:inputText class="slds-input" labelClass="slds-form-element__label" required="true"
+                                                      label="Score Mapping Name: " aura:id="LeadScoreMappingNameBox"/>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                        		<div class="slds-col--padded slds-size--1-of-2">
+                                    <div class="slds-form-element slds-is-required paddingTop">
+                                        <div class="slds-form-element__control">
+                                            <ui:inputText class="slds-input" labelClass="slds-form-element__label" required="true" 
+                                                          label="Minimum Score Value: " aura:id="LeadScoreMinimumValueBox"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col--padded slds-size--1-of-2">
+                                    <div class="slds-form-element slds-is-required paddingTop">
+                                        <div class="slds-form-element__control">
+                                            <ui:inputText class="slds-input" labelClass="slds-form-element__label" required="true" 
+                                                          label="Maximum Score Value: " aura:id="LeadScoreMaximumValueBox"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <aura:renderIf isTrue="{!v.ruleSelected == 'Lead'}">
+                                <div class="slds-form-element slds-is-required paddingTop">
+                                    <div class="slds-form-element__control">
+                                        <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" 
+                                                        label="Lead Rating" aura:id="leadratingBox">
+                                                <ui:inputSelectOption text="Cold"/>
+                                                <ui:inputSelectOption text="Warm"/>
+                                                <ui:inputSelectOption text="Hot"/>
+                                        </ui:inputSelect>
+                                    </div>
+                                </div>
+                            </aura:renderIf>
+                            <aura:renderIf isTrue="{!v.ruleSelected == 'Case'}">
+                                <div class="slds-form-element slds-is-required paddingTop">
+                                    <div class="slds-form-element__control">
+                                        <ui:inputSelect class="slds-select" labelClass="slds-form-element__label" 
+                                                        label="Case Priority" aura:id="priorityBox">
+                                                <ui:inputSelectOption text="P1"/>
+                                                <ui:inputSelectOption text="P2"/>
+                                                <ui:inputSelectOption text="P3"/>
+                                                <ui:inputSelectOption text="P4"/>
+                                        </ui:inputSelect>
+                                    </div>
+                                </div>
+                            </aura:renderIf>
+                            <div class="saveBtnWrapper">
+                                <div class="slds-form-element slds-is-required">
+                                        <div class="slds-form-element__control">
+                                            <ui:button class="saveBtn" labelClass="btnLabel" 
+                                                        press="{!c.handleSave}" label="Save" />
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col--padded slds-size--1-of-4">
+                        </div>
+                    </div>
+                </form>
+            </div>
+    	</div>
+    	<div class="slds-col--padded slds-p-top--large">
+            <aura:renderIf isTrue="{!v.leadScoreMappings.length > 0}">
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="col-lg-12 col-sm-12">
+                        <p class="slds-text-body--large slds-page-header__info"><h1>Scoring Mapping</h1></p>
+                    </div>
+                    <table class="slds-table slds-table--bordered slds-table--striped">
+                      <thead>
+                        <tr>
+                           <th scope="col"><span class="slds-truncate">Name</span></th>
+                           <th scope="col"><span class="slds-truncate">Rule Type</span></th>
+                           <th scope="col"><span class="slds-truncate">Minimum Score</span></th>
+                           <th scope="col"><span class="slds-truncate">Maximum Score</span></th>
+                           <aura:renderIf isTrue="{!v.ruleSelected == 'Lead'}">
+                               <th scope="col"><span class="slds-truncate">Rating</span></th>
+                           </aura:renderIf>
+                           <aura:renderIf isTrue="{!v.ruleSelected == 'Case'}">
+                               <th scope="col"><span class="slds-truncate">Priority</span></th>
+                           </aura:renderIf>
+                           <th scope="col"><span class="slds-truncate">Delete</span></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <aura:iteration items="{!v.leadScoreMappings}" var="mappings">
+                         <tr>
+                           <td>{!mappings.Name}</td>
+                           <td>{!mappings.RuleType__c}</td>                 
+                           <td>{!mappings.LeadScoreMinimumValue__c}</td>
+                           <td>{!mappings.LeadScoreMaximumValue__c}</td>
+                           <aura:renderIf isTrue="{!v.ruleSelected == 'Lead'}">
+                               <td>{!mappings.LeadRating__c}</td>
+                           </aura:renderIf>
+                           <aura:renderIf isTrue="{!v.ruleSelected == 'Case'}">
+                               <td>{!mappings.CasePriority__c}</td>
+                           </aura:renderIf>
+                           <td>
+                              <c:button class="slds-button slds-button--neutral"
+                                 label="Delete"
+                                 svgXlinkHref="/resource/SLDS090/assets/icons/standard-sprite/svg/symbols.svg#account"
+                                 svgClass="slds-icon slds-icon-text-default"
+                                 onclick="{!c.delete}"
+                                 data="{!mappings.Id}"
+                              />
+                           </td>
+                         </tr>
+                        </aura:iteration>
+                      </tbody>
+                   </table>
+                </div>
+            </aura:renderIf>
+        </div>
+</aura:component>

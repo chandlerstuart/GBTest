@@ -1,0 +1,7 @@
+<design:component>
+   <design:attribute name="flowName" label="Flow Name" Description="The API Name of the flow"/> 
+   <design:attribute name="ShowBorder" label="Display Border" Description="If Selected the componenet will be wrapped in a thin border"/>
+   <design:attribute name="PathOrBase" label="Path Or Base" Description="There are two progress indicators. 'Path' and 'Base' (Default). Please specify which you would like to use"/>
+   <design:attribute name="IsModal" label="Display In Modal" Description="If selected the flow will be lifted from the page and displayed in a 'Modal'"/> 
+   <design:attribute name="Header" label="Header Title" Description="Provide an optional flow header title"/>
+</design:component>

@@ -1,0 +1,1085 @@
+<!--/*
+Name:  LeaveEntitlementUserProfile.component
+Copyright © 2014  Kaptio
+======================================================
+======================================================
+Purpose:
+-------
+Visualforce component for the Leave Entitlement overview 
+on user profile
+
+Accepts the parameter "extendedView" for easy identification
+between whether the current use is on the "self" or "others" 
+tabview. When true then "others" is in effect.
+
+Contains an overview over the current leave year for the user 
+profile's owner and Leave requests associated with that year.
+Allows for pagination between years if available.
+
+Also displays a form that allows the user to request leave.
+
+======================================================
+======================================================
+History
+------- 
+Ver. Author                Date                  Detail
+1.0  Halldór Örn        2014-06-20     Initial development.
+2.0  Simon Molloy       2016-10-21     Added in Lieu Days functionality
+
+*/ -->
+<apex:component controller="LeaveEntitlementUserProfileController" id="thePage">
+    <head><apex:slds /></head>
+
+<apex:attribute name="extendedView" description="Boolean variable to determine if current tab should display all fields and values" type="Boolean" required="false" default="false"/>
+
+<apex:variable var="currentUserId" value="{!$User.Id}" />
+    <apex:includeScript value="{!URLFOR($Resource.Kaptio_assets, 'js/jquery.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.Kaptio_assets, 'css/pure.css')}" />
+    <style>
+        .leaveEntitlementOverview{
+            width:97%; 
+            margin: 0 auto; 
+            position: relative;
+            padding-top: 22px;
+            margin-top: 8px;
+        }
+        
+        .vfButtonBar {
+            position: relative;
+            background-color: rgba(0, 0, 0, 0);
+            border-bottom: 1px solid #D7DBDE;
+            line-height: 20px;
+            margin: 0 0 7px;
+        }
+        .leaveEntitlementOverview table td.labelCol{ 
+            width:22%; 
+            padding-top: 3px;
+            padding-right: 10px;
+            padding-bottom: 3px;
+            padding-left: 2px;
+            text-align: right;
+            font-size: 91%;
+            font-weight: bold;
+            color: #333;
+            vertical-align: top;
+        }
+        .leavePanel{margin-bottom: 28px;}
+        .zen-highlightBtn{float: right; cursor: pointer;}
+        .zen-highlightBtn.request-leave{
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+        .zen-highlightBtn.request-lieu{
+            position:absolute;
+            top: 0px; 
+            right:{!lieuButtonPosition}px;
+        }
+        .zen-highlightBtn.request-wellness-day{
+            position:absolute;
+            top: 0px;
+            right:115px;
+        }
+        .zen-highlightBtn.create-leave-year{
+            position: absolute;
+            right:{!leaveYearButtonPosition}px;        
+            top: 0; 
+        }
+        .zen-highlightBtn.create-leave-year a, .zen-highlightBtn.create-leave-year a:hover{color:#fff; text-decoration: none;}
+
+        .leaveEntitlementOverview table.leaveForm td.labelCol {
+            padding: 10px 10px 10px 3px;
+        }
+        .leaveEntitlementOverview table.lieuForm td.labelCol {
+            padding: 10px 10px 10px 3px;
+        }
+        .leaveEntitlementOverview table.wellnessForm td.labelCol {
+            padding: 10px 10px 10px 3px;
+        }
+        .leaveForm {opacity: 0; display: none;}
+        .leaveForm form{
+            
+            overflow: hidden;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .lieuForm {opacity: 0; display: none;}
+        .lieuForm form{
+            
+            overflow: hidden;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .wellnessForm {opacity: 0; display: none;}
+        .wellnessForm form{
+            
+            overflow: hidden;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .page-loader{
+            background: url(/img/loading32.gif) no-repeat center 120px rgba(255,255,255,0.7);
+            width: 100%;
+            height: 600px;
+            display: none;
+            position: absolute;
+            z-index: 1000;      
+            position: absolute;
+            top: 0;
+            left: 0;    
+        }
+
+
+        .td label {
+            font-weight: bold;
+            margin: 0 7px 0 20px;
+        }
+/*      .pure-table thead {
+            background: -webkit-linear-gradient(top,#8AB529 0,#87AC31 100%);
+            color: white;
+            text-align: left;
+            vertical-align: bottom;
+            border: 1px solid #6c8049;
+            box-shadow: 0 1px 2px 0 #adadad;
+        }*/
+
+        
+        .pure-table thead th{font-weight: normal; color:#000;}
+        form.gotoyear{float: right;}
+        .vfButtonBar .gotoyear a{float:none; padding: 0 4px;}
+        .pure-table td, .pure-table th{padding: .5em;}
+        .pure-table td.center{text-align: center;}
+        .pure-table td.actions{white-space: nowrap;}
+        
+        .submit-leave-request{
+            clear: both;
+            float: right;
+            margin: 10px 40px 0 0;
+            background: #8AB529;
+            border-radius: 3px;
+            border: 1px solid #6C8049;
+            box-shadow: none;
+            color: #FFF !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            height: 27px;
+            text-align: center;
+            width: 80px;
+        }
+        .submit-leave-request:hover{
+            background: #A0CB3D;
+            background-image: -webkit-linear-gradient(top,#A0CB3D,#87AC31);
+            background-image: -moz-linear-gradient(top,#a0cb3d,#87ac31);
+            background-image: -ms-linear-gradient(top,#a0cb3d,#87ac31);
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .cancel-leave-request{
+            float: right;
+            margin: 10px 4px 0 0;
+
+            background: #EAEBED;
+            border: 1px solid #C5C6C8;
+            border-radius: 3px;
+            color: #404C5B !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            height: 27px;
+            letter-spacing: normal;
+            line-height: normal;
+            margin-right: 5px !important;
+
+            text-align: center;
+            width: 84px;
+        }
+        .cancel-leave-request:hover{
+            background: #F5F5F5;
+            background-image: -webkit-linear-gradient(top,#FFF,#EFEFEF);
+            background-image: -moz-linear-gradient(top,#fff,#efefef);
+            background-image: -ms-linear-gradient(top,#fff,#efefef);
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 0 #FFF;
+        }
+        .submit-lieu-request{
+            clear: both;
+            float: right;
+            margin: 10px 40px 0 0;
+            background: #8AB529;
+            border-radius: 3px;
+            border: 1px solid #6C8049;
+            box-shadow: none;
+            color: #FFF !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            height: 27px;
+            text-align: center;
+            width: 80px;
+        }
+        .submit-lieu-request:hover{
+            background: #A0CB3D;
+            background-image: -webkit-linear-gradient(top,#A0CB3D,#87AC31);
+            background-image: -moz-linear-gradient(top,#a0cb3d,#87ac31);
+            background-image: -ms-linear-gradient(top,#a0cb3d,#87ac31);
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .cancel-lieu-request{
+            float: right;
+            margin: 10px 4px 0 0;
+
+            background: #EAEBED;
+            border: 1px solid #C5C6C8;
+            border-radius: 3px;
+            color: #404C5B !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            height: 27px;
+            letter-spacing: normal;
+            line-height: normal;
+            margin-right: 5px !important;
+
+            text-align: center;
+            width: 84px;
+        }
+        .cancel-lieu-request:hover{
+            background: #F5F5F5;
+            background-image: -webkit-linear-gradient(top,#FFF,#EFEFEF);
+            background-image: -moz-linear-gradient(top,#fff,#efefef);
+            background-image: -ms-linear-gradient(top,#fff,#efefef);
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 0 #FFF;
+        }
+
+        .submit-wellness-request{
+            clear: both;
+            float: right;
+            margin: 10px 40px 0 0;
+            background: #8AB529;
+            border-radius: 3px;
+            border: 1px solid #6C8049;
+            box-shadow: none;
+            color: #FFF !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            height: 27px;
+            text-align: center;
+            width: 80px;
+        }
+        .submit-wellness-request:hover{
+            background: #A0CB3D;
+            background-image: -webkit-linear-gradient(top,#A0CB3D,#87AC31);
+            background-image: -moz-linear-gradient(top,#a0cb3d,#87ac31);
+            background-image: -ms-linear-gradient(top,#a0cb3d,#87ac31);
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .cancel-wellness-request{
+            float: right;
+            margin: 10px 4px 0 0;
+
+            background: #EAEBED;
+            border: 1px solid #C5C6C8;
+            border-radius: 3px;
+            color: #404C5B !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            height: 27px;
+            letter-spacing: normal;
+            line-height: normal;
+            margin-right: 5px !important;
+
+            text-align: center;
+            width: 84px;
+        }
+        .cancel-wellness-request:hover{
+            background: #F5F5F5;
+            background-image: -webkit-linear-gradient(top,#FFF,#EFEFEF);
+            background-image: -moz-linear-gradient(top,#fff,#efefef);
+            background-image: -ms-linear-gradient(top,#fff,#efefef);
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 0 #FFF;
+        }
+        .form-results{display: none;}
+        .form-results.message{ background: none; border:none; text-align: center; font-weight: bold; color:#C00;}
+        .form-results.message.message-success{color:#008000;}
+        /*.pure-message*/
+    </style>
+
+
+    <apex:outputPanel layout="block" styleClass="leaveEntitlementOverview setupV">
+        <apex:outputPanel layout="block" styleClass="leaveFormWrapper">
+            <div class="zen">
+                <apex:outputPanel layout="none" rendered="{!extendedView}">
+                    <button class="zen-highlightBtn create-leave-year">
+                        <!--<a target="_parent" href="/apex/redirect?object=EmployeeLeaveYear__c&ID_Employee__c={!employee.Id}&Employee__c={!employee.Name}&Year__c={!activeYear}&Name={!employee.Name}%20{!activeYear}&retURL=%2F_ui%2Fcore%2Fuserprofile%2FUserProfilePage%3ftab%3d{!tab}%26u%3d{!employeeId}&saveURL=%2F_ui%2Fcore%2Fuserprofile%2FUserProfilePage%3ftab%3d{!tab}%26u%3d{!employeeId}">Create Leave Year</a>-->
+                        <a target="_parent" href="/lightning/o/EmployeeLeaveYear__c/new?defaultFieldValues=Employee__c={!employee.Id},Year__c={!activeYear},EndDate__c={!lastDayOfYearString},Name={!employee.Name}%20{!activeYear}&retURL=%2F_ui%2Fcore%2Fuserprofile%2FUserProfilePage%3ftab%3d{!tab}%26u%3d{!employeeId}&saveURL=%2F_ui%2Fcore%2Fuserprofile%2FUserProfilePage%3ftab%3d{!tab}%26u%3d{!employeeId}">Create Leave Year</a>
+                    </button>
+
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!showLieuButton}">
+                    <button class="zen-highlightBtn request-leave">Request leave</button>
+                    <button class="zen-highlightBtn request-lieu">Log lieu days</button>
+                    <apex:outputPanel rendered="{!showWellnessButton}"><button class="zen-highlightBtn request-wellness-day">Request Well-being Leave</button></apex:outputPanel>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(showLieuButton)}">
+                    <button class="zen-highlightBtn request-leave">Request leave</button>
+                    <apex:outputPanel rendered="{!showWellnessButton}"><button class="zen-highlightBtn request-wellness-day">Request Well-being Leave</button></apex:outputPanel>
+                </apex:outputPanel>
+                
+            </div>
+            <!-- START Leave Request Form -->
+            <apex:outputPanel layout="block" styleClass="leaveForm">
+                
+                <apex:form >
+                
+                    <div class="vfButtonBar">
+                        <h3>Request leave</h3>
+                    </div>
+                    <div class="message form-results"></div>
+                    <table id="leaveForm" width="100%" class="leaveForm">
+                        
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.LeaveType__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputField value="{!aLeave.LeaveType__c}" styleClass="leavetype" rendered="{!extendedView}"/>
+                                <apex:outputText value="Holiday" styleClass="leavetype" rendered="{!NOT(extendedView)}"/>
+                                
+                            </td>
+                            <td class="labelCol">
+                                
+                            </td>
+                            <td class="dataCol">
+                                
+                            </td>
+                        </tr>
+                        
+
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.StartDate__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputField value="{!aLeave.StartDate__c}" styleClass="startdate"  />
+                            </td>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.EndDate__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputField value="{!aLeave.EndDate__c}"  styleClass="enddate" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.AM__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputCheckbox value="{!aLeave.AM__c}" styleClass="am"/>
+                                <span class="td">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PMStart__c.Label}" />
+                                <apex:inputCheckbox value="{!aLeave.PMStart__c}" styleClass="pmstart" />
+                                </span>
+                            </td>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PMReturn__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputCheckbox value="{!aLeave.PMReturn__c}" styleClass="pmreturn" />
+                                <span class="tooltip" style="margin-left:10px;cursor:initial;">
+                                    <span style="margin-left:10px;"><apex:image url="{!$Resource.HelpText_Icon}" width="18" height="18"/></span>
+                                    <c:HelpText helpText="{!$Label.Leave_Help_PM_Included}"/>
+                                </span>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.EmployeeComment__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputTextarea value="{!aLeave.EmployeeComment__c}" styleclass="employeecomment" />
+                            </td>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PublicNote__c.Label}" rendered="{!extendedView}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputTextarea value="{!aLeave.PublicNote__c}" styleclass="publicnote" rendered="{!extendedView}" />
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <apex:inputHidden value="{!leave.employeeName}" html-class="userId"/>
+                    <apex:inputHidden value="{!activeLeaveYear.Id}" html-class="leaveYearId"/>
+                    
+                    <div class="zen">
+                        <button class="submit-leave-request">Submit</button>
+                        <button class="cancel-leave-request">Cancel</button>                        
+                    </div>
+                </apex:form>
+            </apex:outputPanel>
+        
+        <!-- END Leave Request Form -->
+        
+        <!-- NEW LIEU REQUEST FORM -->
+            <apex:outputPanel layout="block" styleClass="lieuForm">
+                
+                <apex:form >
+                
+                    <div class="vfButtonBar">
+                        <h3>Log lieu days</h3>
+                    </div>
+                    <div class="message form-results"></div>
+                    <table id="lieuForm" width="100%" class="lieuForm">
+                        
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$Label.Lieu_Type}" />
+                            </td>
+                            <td class="dataCol">
+                                <!-- TODO : Select List for Lieu Days or Lieu Pay -->
+                                <!-- <apex:inputField value="{!aLeave.LeaveType__c}" styleClass="leavetype" rendered="{!extendedView}"/> -->
+                                <!-- <apex:outputText value="Lieu" styleClass="leavetype" rendered="{!NOT(extendedView)}"/> -->
+                                <apex:selectList value="{!lieuType}" size="1" styleClass="lieutype">
+                                    <apex:selectOptions value="{!lieuTypes}"/>
+                                </apex:selectList>
+                                
+                            </td>
+                            <td class="labelCol">
+                                
+                            </td>
+                            <td class="dataCol">
+                                
+                            </td>
+                        </tr>
+                        
+
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$Label.Lieu_Accrued_Date}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputField value="{!aLeave.StartDate__c}" styleClass="lieuStartdate"  />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.AM__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputCheckbox value="{!aLeave.AM__c}" styleClass="lieuAM"/>
+                                <span class="td">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PMStart__c.Label}" />
+                                <apex:inputCheckbox value="{!aLeave.PMStart__c}" styleClass="lieuPMstart" />
+                                </span>
+                            </td>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PMReturn__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputCheckbox value="{!aLeave.PMReturn__c}" styleClass="lieuPMreturn" />
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.EmployeeComment__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputTextarea value="{!aLeave.EmployeeComment__c}" styleClass="lieuEmployeecomment" />
+                            </td>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PublicNote__c.Label}" rendered="{!extendedView}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputTextarea value="{!aLeave.PublicNote__c}" styleclass="lieuPublicnote" rendered="{!extendedView}" />
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <apex:inputHidden value="{!leave.employeeName}" html-class="userId"/>
+                    <apex:inputHidden value="{!activeLeaveYear.Id}" html-class="leaveYearId"/>
+                    
+                    <div class="zen">
+                        <button class="submit-lieu-request">Submit</button>
+                        <button class="cancel-lieu-request">Cancel</button>                        
+                    </div>
+                </apex:form>
+            </apex:outputPanel>
+            <!-- END NEW LIEU REQUEST FORM -->
+
+            <!-- NEW WELLNESS REQUEST FORM -->
+            <apex:outputPanel layout="block" styleClass="wellnessForm">
+                    
+                <apex:form >
+                
+                    <div class="vfButtonBar">
+                        <h3>Request Well-being Leave</h3>
+                    </div>
+                    <div class="message form-results"></div>
+                    <table id="wellnessForm" width="100%" class="wellnessForm" style="margin-top: 35px;">                
+
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$Label.Wellness_Day_Date}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputField value="{!aLeave.StartDate__c}" styleClass="wellnessStartdate">
+                                    <apex:actionSupport event="onchange" action="{!calculateRemainingDays}" reRender="wellness-remaining-days"/>
+                                </apex:inputField>
+                            </td>
+                            <td rowspan="3" style="text-align: center;">
+                                <apex:outputPanel layout="block" id="wellness-remaining-days">
+                                    <div style="margin-top:-30px;"><apex:image url="{!$Resource.WellnessIcon}" width="250" height="50"/></div>
+                                    <div style="padding-top:15px; font-size: 15px;">You have <b><apex:outputText value="{!RemainingWellnessDays}"/></b> well-being day(s) remaining this month</div>
+                                </apex:outputPanel>
+                            </td> 
+                        </tr> 
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.AM__c.Label}" />
+                                <td class="dataCol">
+                                    <apex:inputCheckbox value="{!aLeave.AM__c}" styleClass="wellnessAM"/>
+                                    <span class="td">
+                                    <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PMStart__c.Label}" />
+                                    <apex:inputCheckbox value="{!aLeave.PMStart__c}" styleClass="wellnessPMstart" />
+                                    </span>
+                                    <span class="tooltip" style="margin-left:10px;cursor:initial;">
+                                        <span style="margin-left:10px;"><apex:image url="{!$Resource.HelpText_Icon}" width="18" height="18"/></span>
+                                        <c:HelpText helpText="{!$Label.Leave_Help_AM_OR_PM}"/>
+                                    </span>
+                                </td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.EmployeeComment__c.Label}" />
+                            </td>
+                            <td class="dataCol">
+                                <apex:inputTextarea value="{!aLeave.EmployeeComment__c}" styleClass="wellnessEmployeecomment" />
+                            </td>
+                            <td class="labelCol">
+                                <apex:outputLabel value="{!$ObjectType.Leave__c.fields.PublicNote__c.Label}" rendered="{!extendedView}" />
+                            </td>
+                            <!--<td class="dataCol">
+                                <apex:inputTextarea value="{!aLeave.PublicNote__c}" styleclass="wellnessPublicNote" rendered="" />
+                            </td>-->
+                        </tr>
+                    </table>
+
+                    <apex:inputHidden value="{!leave.employeeName}" html-class="userId"/>
+                    <apex:inputHidden value="{!activeLeaveYear.Id}" html-class="leaveYearId"/>
+                    
+                    <div class="zen">
+                        <button class="submit-wellness-request">Submit</button>
+                        <button class="cancel-wellness-request">Cancel</button>                        
+                    </div>
+                </apex:form>
+            </apex:outputPanel>
+        <!-- END NEW WELLNESS REQUEST FORM -->
+        </apex:outputPanel>
+
+        <!-- START Employee Leave Year overview -->
+        <apex:outputPanel styleClass="leavePanel" layout="block" id="leavePanel">
+            
+            <apex:detail subject="{!leaveYear.Id}" relatedList="false" title="false" showChatter="false" inlineEdit="false" />
+
+            <apex:outputPanel layout="block" id="requrestsTable">
+                <div class="vfButtonBar">
+                    <h3>Leave Requests for {!selectedYear}</h3>
+                    <!-- START Leave Request overview pagination -->
+                    <apex:variable var="suffix" value="{!IF(extendedView, 'Others','Self')}" />
+                    <apex:form styleClass="gotoyear">
+                        <apex:outputPanel rendered="{!hasPrev}">
+                            <a href="/apex/LeaveEntitlement{!suffix}?sfdc.tabName={!tabId}&sfdc.userId={!employeeId}&year={!lastYear}">{!lastYear}</a>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!AND(hasNext, hasPrev)}" styleclass="divider">|</apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!hasNext}">
+                            <a href="/apex/LeaveEntitlement{!suffix}?sfdc.tabName={!tabId}&sfdc.userId={!employeeId}&year={!nextYear}">{!nextYear}</a>
+                        </apex:outputPanel>
+                    </apex:form>
+                    <!-- END Leave Request overview pagination -->
+                </div>
+                
+                <!-- START Leave Request overview -->
+                <apex:outputPanel rendered="{!leaveRequests.size == 0}"><apex:outputText value="No leave requests for {!selectedYear}" /></apex:outputPanel>
+                <apex:dataTable var="l" value="{!leaveRequests}" id="leaveRequestsTable" styleClass="pure-table pure-table-bordered" width="100%" rendered="{!leaveRequests.size > 0}">
+                        <apex:column headerValue="Action" styleClass="actions" rendered="{!extendedView}">
+                            <a href="/apex/redirect?object=Leave__c&objectId={!l.Id}&HR_Comments__c=&retURL=%2F_ui%2Fcore%2Fuserprofile%2FUserProfilePage%3ftab%3d{!tab}%26u%3d{!employeeId}" target="_parent">Edit</a> | <a href="/{!l.Id}" target="_parent">View</a>
+
+
+                            <!-- TODO: retURL -->
+                        </apex:column>
+                        <apex:column headerValue="From">
+                            <apex:outputField value="{!l.StartDate__c}" /><br />
+                            <apex:outputText value="{! IF( AND( l.AM__c, l.PMStart__c ), 'Full Day', 'Half Day' ) }" />
+                        </apex:column>
+                        <apex:column headerValue="To">
+                            <apex:outputField value="{!l.EndDate__c }" /><br />
+                            <apex:outputText value="{! IF( l.PMReturn__c , 'Full Day', 'Half Day' ) }" />
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Leave__c.fields.NumberOfHolidays__c.Label}" styleClass="center">
+                            <apex:outputText value="{!l.NumberOfHolidays__c }" />
+                        </apex:column>
+                        
+                        <apex:column headerValue="{!$ObjectType.Leave__c.fields.EmployeeComment__c.Label}">
+                            <apex:outputField value="{!l.EmployeeComment__c}" />
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Leave__c.fields.PublicNote__c.Label}">
+                            <apex:outputField value="{!l.PublicNote__c}" />
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Leave__c.fields.LeaveType__c.Label}">
+                            <apex:outputField value="{!l.LeaveType__c}" />
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Leave__c.fields.Status__c.Label}">
+                            <apex:outputField value="{!l.Status__c}" />
+                        </apex:column>
+
+                    
+                    </apex:dataTable>               
+            </apex:outputPanel> 
+            <!-- END Leave Request overview -->
+            
+        </apex:outputPanel>
+        <div class="page-loader"></div>
+
+    </apex:outputPanel>
+    <!-- END Employee Leave Year overview -->
+    <script>
+        var processMode;
+        jQuery(document).ready(function($){
+            $('.hideListButton:last').click();
+
+            var isExtended = '{!extendedView}';
+            processMode = false;
+            $('#topButtonRow,#bottomButtonRow').hide();
+
+            $('.request-leave').on('click',function(){
+                showHideForm('show');
+                showHideLieuForm('hide');
+                showHideWellnessForm('hide');
+                return false;
+            });
+            $('.cancel-leave-request').on('click',function(){
+                showHideForm('hide');
+                return false;
+            });
+            $('.submit-leave-request').on('click',function(){
+
+                if(!processMode){
+                    processMode = true;
+                    //console.log('Submitting');
+                    showHideResults('hide','');
+                    
+                    // Type put outside values object because of weird behaviour.
+                    var type = isExtended == 'true' ? $('.leavetype :selected').val() : 'Holiday';
+                    type = type != undefined ? type : hasValue($('.leavetype').text());
+                    //console.log('type: '+type);
+                    var values = {};
+
+                    values.userId       = hasValue($('.userId').val());
+                    values.leaveYearId  = hasValue($('.leaveYearId').val());
+                    values.leavetype    = type;
+                    values.startdate    = hasValue($('.startdate').val());
+                    values.enddate      = hasValue($('.enddate').val());
+                    values.am           = $('.am').is(':checked');
+                    values.pmstart      = $('.pmstart').is(':checked');
+                    values.pmreturn     = $('.pmreturn').is(':checked');
+                    values.comment      = hasValue($('.employeecomment').val());
+                    values.publicnote   = hasValue($('.publicnote').val()) != '' ? $('.publicnote').val() : type;
+                    
+
+                    //console.log(values);
+
+                    if(type = '' || type == null || type == undefined || type == false ){
+                        showHideResults('error','Leave Type');
+                        processMode = false;
+                        return false;
+                    }
+
+                    if(isExtended == 'false' && values.comment == ''){
+                        showHideResults('error','Employee Comment');
+                        processMode = false;
+                        return false;
+                    }
+
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.LeaveEntitlementUserProfileController.submitLeaveRequest}',
+                        values.userId, values.leaveYearId, values.leavetype, values.startdate, values.enddate, values.am, values.pmstart, values.pmreturn,values.comment, values.publicnote, 
+                        function( result, event ){
+                            showHideLoader('show'); 
+                            if(event.type == 'exception') {
+                                processMode = false;
+                                showHideResults('error',event.message);
+                                showHideLoader('hide');
+                            } else {
+                                console.log('processMode: '+processMode);
+                                processMode = false;
+                                if(result == 'success'){
+                                    showHideForm('show');   
+                                    showHideResults('success','Leave Request created sucessfully');
+                                    
+                                }else{
+                                    showHideResults('error',result);
+                                }
+
+                            }
+                            showHideLoader('hide');
+                            
+
+                        }
+                    );
+                }
+                //processMode = false;
+                return false;
+            });
+            
+            $('.request-lieu').on('click',function(){
+                showHideLieuForm('show');
+                showHideWellnessForm('hide');
+                showHideForm('hide');
+                return false;
+            });
+            $('.request-wellness-day').on('click',function(){
+                showHideWellnessForm('show');
+                showHideLieuForm('hide');
+                showHideForm('hide');
+                return false;
+            });
+            $('.cancel-lieu-request').on('click',function(){
+                showHideLieuForm('hide');
+                return false;
+            });
+            $('.cancel-wellness-request').on('click',function(){
+                showHideWellnessForm('hide');
+                return false;
+            });
+            $('.submit-lieu-request').on('click',function(){
+
+                if(!processMode){
+                    processMode = true;
+                    //console.log('Submitting');
+                    showHideResults('hide','');
+                    
+                    // Type put outside values object because of weird behaviour.
+                    var type = $('.lieutype :selected').val();
+                    type = type != undefined ? type : hasValue($('.lieutype').text());
+                    //console.log('type: '+type);
+                    var values = {};
+
+                    values.userId       = hasValue($('.userId').val());
+                    values.leaveYearId  = hasValue($('.leaveYearId').val());
+                    values.leavetype    = type;
+                    var lieuType        = 'PAY' == type ? 'Lieu Pay' : 'Lieu Holiday';
+                    values.lieuType     = lieuType;
+                    values.startdate    = hasValue($('.lieuStartdate').val());
+                    //END DATE Will now be populated by Start Date as this is just an 'accrued' date, not a range
+                    //values.enddate      = hasValue($('.lieuEnddate').val());
+                    values.enddate      = hasValue($('.lieuStartdate').val());
+                    values.am           = $('.lieuAM').is(':checked');
+                    values.pmstart      = $('.lieuPMstart').is(':checked');
+                    values.pmreturn     = $('.lieuPMreturn').is(':checked');
+                    values.comment      = hasValue($('.lieuEmployeecomment').val());
+                    values.publicnote   = hasValue($('.lieuPublicnote').val()) != '' ? $('.lieuPublicnote').val() : lieuType;
+                    
+
+                    //console.log(values);
+
+                    if(type = '' || type == null || type == undefined || type == false ){
+                        showHideResults('error','Leave Type');
+                        processMode = false;
+                        return false;
+                    }
+
+                    if(isExtended == 'false' && values.comment == ''){
+                        showHideResults('error','Employee Comment');
+                        processMode = false;
+                        return false;
+                    }
+
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.LeaveEntitlementUserProfileController.submitLieuRequest}',
+                        values.userId, values.leaveYearId, values.leavetype, values.startdate, values.enddate, values.am, values.pmstart, values.pmreturn,values.comment, values.publicnote, values.lieuType,  
+                        function( result, event ){
+                            showHideLoader('show'); 
+                            if(event.type == 'exception') {
+                                showHideResults('error',event.message);
+                                showHideLoader('hide');
+                            } else {
+                                
+                                if(result == 'success'){
+                                    showHideLieuForm('show');   
+                                    showHideResults('success','Lieu Request created sucessfully');
+                                    
+                                }else{
+                                    showHideResults('error',result);
+                                }
+
+                            }
+                            showHideLoader('hide');
+                            
+
+                        }
+                    );
+                }
+                processMode = false;
+                return false;
+            });
+
+            $('.submit-wellness-request').on('click',function(){
+
+                if(!processMode){
+                    processMode = true;
+                    console.log('Submitting');
+                    showHideResults('hide','');
+                    
+                    //console.log('type: '+type);
+                    var values = {};
+
+                    values.userId       = hasValue($('.userId').val());
+                    values.leaveYearId  = hasValue($('.leaveYearId').val());
+                    values.startdate    = hasValue($('.wellnessStartdate').val());
+                    values.enddate      = hasValue($('.wellnessStartdate').val());//Same as start date
+                    values.am           = $('.wellnessAM').is(':checked');
+                    values.pmstart      = $('.wellnessPMstart').is(':checked');
+                    values.comment      = hasValue($('.wellnessEmployeecomment').val());
+                    values.publicnote   = hasValue($('.wellnessPublicNote').val()) != '' ? $('.wellnessPublicNote').val() : null;
+                    
+                    console.log('values > ',values);
+
+                    if(isExtended == 'false' && values.comment == ''){
+                        showHideResults('error','Employee Comment');
+                        processMode = false;
+                        return false;
+                    }
+
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.LeaveEntitlementUserProfileController.submitWellnessRequest}',
+                        values.userId, values.leaveYearId, values.startdate, values.enddate, values.am, values.pmstart, values.comment, values.publicnote,  
+                        function( result, event ){
+                            showHideLoader('show'); 
+                            if(event.type == 'exception') {
+                                processMode = false;
+                                showHideResults('error',event.message);
+                                showHideLoader('hide');
+                            } else {
+                                 
+                                if(result == 'success'){
+                                    processMode = false;
+                                    showHideWellnessForm('show');   
+                                    showHideResults('success','Well-being Leave Request created sucessfully');
+                                    
+                                }else{
+                                    showHideResults('error',result);
+                                }
+
+                            }
+                            showHideLoader('hide');
+                            
+
+                        }
+                    );
+                }
+                //processMode = false;
+                return false;
+            });
+
+
+            function showHideForm(type){
+                if(type == 'show'){
+                    $('.leavePanel').animate({ 'opacity':'0' }, 500,  function(){
+                        $('.leavePanel').hide();
+                        $('.leaveForm').show().animate({ 'opacity':'1' }, 500 );
+                    });
+                }else{
+                    showHideLoader('show');
+                    $('.leaveForm').animate({ 'opacity':'0' }, 500, function(){
+                        $('.leaveForm').css('display','none');
+                        if(type == 'submit'){
+                            window.location = window.location.href;
+                        }else {
+                            $('.leavePanel').show().animate({ 'opacity':'1' }, 500, function(){
+                                showHideLoader('hide');
+                                showHideResults('hide','');
+                                
+                            });
+                        }
+                    });
+                }
+            }
+            
+            function showHideLieuForm(type){
+                if(type == 'show'){
+                    $('.leavePanel').animate({ 'opacity':'0' }, 500,  function(){
+                        $('.leavePanel').hide();
+                        $('.lieuForm').show().animate({ 'opacity':'1' }, 500 );
+                    });
+                    
+                }else{
+                    showHideLoader('show');
+                    $('.lieuForm').animate({ 'opacity':'0' }, 500, function(){
+                        $('.lieuForm').css('display','none');
+                        if(type == 'submit'){
+                            window.location = window.location.href;
+                        }else {
+                            $('.leavePanel').show().animate({ 'opacity':'1' }, 500, function(){
+                                showHideLoader('hide');
+                                showHideResults('hide','');
+                                
+                            });
+                        }
+                    });
+                }
+            }
+
+            function showHideWellnessForm(type){
+                if(type == 'show'){
+                    $('.leavePanel').animate({ 'opacity':'0' }, 500,  function(){
+                        $('.leavePanel').hide();
+                        $('.wellnessForm').show().animate({ 'opacity':'1' }, 500 );
+                    });
+                    
+                }else{
+                    showHideLoader('show');
+                    $('.wellnessForm').animate({ 'opacity':'0' }, 500, function(){
+                        $('.wellnessForm').css('display','none');
+                        if(type == 'submit'){
+                            window.location = window.location.href;
+                        }else {
+                            $('.leavePanel').show().animate({ 'opacity':'1' }, 500, function(){
+                                showHideLoader('hide');
+                                showHideResults('hide','');
+                                
+                            });
+                        }
+                    });
+                }
+            }
+
+            function showHideLoader(type){
+                var loader = $('.page-loader');
+                //console.log(loader,'loader');
+                if(type == 'show'){
+                    loader.show();
+                }else{
+                    loader.hide();
+                }
+                
+            }
+
+            function showHideResults(type, message){
+                // This functions shows or hides the .form-results div.
+                // Options are: 
+                //      hide - which hides the form
+                //      success 
+                //      error 
+                //      warning 
+                //      secondary
+                //console.log('type',type);
+                //console.log('message',message);
+
+                var message = parseMessage(message);
+                //console.log('message: ' , message)
+                var res = $('.form-results');
+                if(type != 'hide'){
+                    if(type == 'error'){
+                        type += ' errorMsg';
+                    }
+                    res.text('').removeClass('errorMsg').removeClass('[class^="message-"]').addClass('message-'+type).html(message).show();
+                    if(type=='success'){
+                        setTimeout(function() {
+                            // showHideForm('hide');                        
+                            showHideForm('submit');
+                        }, 3000);
+                        
+                        resetForm();
+                    }
+                } else {
+                    res.text('').hide();
+                }
+            }
+
+            function resetForm(){
+                //console.log('Resetting');
+                $('.leaveForm input[type="text"]').val('');
+                $('.leaveForm input[type="checkbox"]').prop('checked','checked');
+                $('.leaveForm textarea').val('');
+
+
+            }
+
+            function parseMessage(message){
+                var result = message;               
+                if(message.indexOf('AM or PM') != -1)
+                    result = 'Either AM or PM must be selected for start date';
+                if(message.indexOf('Public Note') != -1)
+                    result = 'Public Note must be filled out';
+                if(message.indexOf('Employee Comment') != -1)
+                    result = 'Employee Comment must be filled out';
+                if(message.indexOf('Leave Type') != -1)
+                    result = 'Leave Type must be selected';
+                if(message.indexOf('overlap') != -1)
+                    result = 'Overlapping requests are not allowed.';
+                if(message.indexOf('Leave length 0') != -1)
+                    result = 'Length of leave request is <strong>0 days</strong>.<br /> Please check if the requested leave occurs on a holiday and/or non-working days on your schedule';
+                
+                return result;
+            }
+
+
+            function hasValue(element){
+                return ( element != '' && element != undefined && element != null ) ? element : '';
+            }
+    
+        });
+    </script>
+
+
+</apex:component>

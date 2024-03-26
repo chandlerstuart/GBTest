@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event template" >
+    <aura:attribute type="Boolean" name="refresh" description="If true the data will be refreshed from the server"/>
+    <aura:attribute type="Boolean" name="revisePanelValidation" description="If true the styling (colours) of the Marketing Preferences Panel will be revised"/>
+</aura:event>

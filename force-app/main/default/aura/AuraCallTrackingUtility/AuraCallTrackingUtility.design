@@ -1,0 +1,7 @@
+<design:component >
+    <design:attribute name="customMessage" label="Custom Message" description="Optional overriding alert message. Supports the following merge values: [!clientFirstName], [!clientLastName], [!userFirstName], [!userLastName] "/>
+    <design:attribute name="messageTypeDeveloperName" label="Message Type Developer Name" description="The developer name of the Message Type used to publish the Act On It alert message."/>
+    <design:attribute name="pollingInterval" label="Polling Interval" description="The wait period (seconds) between callouts to assess the live status of the active call."/>
+    <design:attribute name="minimumConnectedCallTime" label="Minimum Connected Call Time" description="The minimum time (seconds) the agent should be connected to a customer before the alert is published."/>
+    <design:attribute name="onACallAgentStatusId" label="On a call Omni Status Id" description="The Id of the Omni Channel Status that indicates the agent is on a call."/>
+</design:component>

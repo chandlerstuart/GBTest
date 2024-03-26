@@ -1,0 +1,11 @@
+<aura:component implements="lightning:availableForFlowScreens">
+    <aura:attribute name="errorMessage" type="String" default="hello"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    
+    <div id="containerDiv" aura:id="containerDiv"></div>
+    
+    {!v.errorMessage}
+    
+
+</aura:component>

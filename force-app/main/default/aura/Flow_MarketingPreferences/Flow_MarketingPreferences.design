@@ -1,0 +1,13 @@
+<design:component>
+	<design:attribute name="iconSize" label="Icon Size" datasource="x-small,small,medium,large,x-large" description="Acceptable sizes incl; x-small,small,medium,large,x-large"/>
+    <design:attribute name="textSize" label="Text Size" datasource="x-small,small,medium,large,x-large" description="Acceptable sizes incl; x-small,small,medium,large,x-large"/>
+    <design:attribute name="phone" label="Phone"/>
+    <design:attribute name="sms" label="SMS"/>
+    <design:attribute name="brochure" label="Brochure"/>
+    <design:attribute name="weeklyNewsletter" label="Weekly Newsletter"/>
+    <design:attribute name="seasonalNewsletter" label="Seasonal Newsletter"/>
+    <design:attribute name="tournamentsNewsletter" label="Tournaments Newsletter"/>
+    <design:attribute name="eventsNewsletter" label="Events Newsletter"/>
+    <design:attribute name="wrapIcons" label="Wrap Icons" description="The default is a horizontal preferences panel. Enable this setting to wrap the icons on multiple rows"/>
+    <design:attribute name="padding" label="Padding" description="The padding/spacing from other flow components. Accepted padding values include 'x-small', 'small', 'medium', 'large', 'x-large' and 'xx-large'."/>
+</design:component>

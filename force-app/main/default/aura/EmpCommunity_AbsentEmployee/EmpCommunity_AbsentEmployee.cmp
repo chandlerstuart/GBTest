@@ -1,0 +1,7 @@
+<aura:component implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:attribute name="absentEmployee" type="AbsentEmployeeListControllerExt.AbsentWrapper"/>
+    <td data-label="Name"><div class="slds-truncate slds-text-body--x-small" title="{!v.absentEmployee.name}"><ui:outputURL class="slds-text-body--small" value="{!'profile/' + v.absentEmployee.id}" label="{!v.absentEmployee.name}"/></div></td>
+    <td data-lable="Note"><div class="slds-truncate slds-text-body--x-small" title="{!v.absentEmployee.publicNote}"><ui:outputText class="slds-text-body--small" value="{!v.absentEmployee.publicNote}"/></div></td>
+    	<!-- <td data-label="Start Date"><div class="slds-truncate slds-text-body-*small" title="{!v.absentEmployee.startDate}">{!v.absentEmployee.startDate}</div></td> -->
+    <!-- <td data-label="End Date"><div class="slds-truncate slds-text-body-*x-small" title="{!v.absentEmployee.endDate}"><ui:outputText class="slds-text-body-*small" value="{!v.absentEmployee.endDate}"/></div></td> -->
+</aura:component>

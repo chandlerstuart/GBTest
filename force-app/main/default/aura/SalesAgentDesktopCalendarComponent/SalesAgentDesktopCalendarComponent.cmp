@@ -1,0 +1,210 @@
+<aura:component controller="LC07_SalesAgentDesktopController" implements="force:appHostable,flexipage:availableForAllPageTypes">
+  <ltng:require scripts="/support/console/22.0/integration.js"/>
+  <ltng:require styles="/resource/slds090/assets/styles/salesforce-lightning-design-system-vf.css"/>
+    
+    <aura:attribute name="leadColumnHeaders" type="String[]"/>
+    <aura:attribute name="oppColumnHeaders" type="String[]"/>
+    <aura:attribute name="caseColumnHeaders" type="String[]"/>
+    <aura:attribute name="bookingCaseColumnHeaders" type="String[]"/>
+    <aura:attribute name="leadOppCaseColumnHeaders" type="String[]"/>
+    <aura:attribute name="taskColumnHeaders" type="String[]"/> 
+    <aura:attribute name="todayLeads" type="ListViewWrapper[]" />
+    <aura:attribute name="todayOpps" type="ListViewWrapper[]" />
+    <aura:attribute name="todayCases" type="ListViewWrapper[]" />    
+    <aura:attribute name="todayTasks" type="ListViewWrapper[]" />  
+    <aura:attribute name="totalRecords" type="integer" default="0"/>
+    <aura:attribute name="totalLeads" type="integer"/>
+    <aura:attribute name="totalOpps" type="integer"/>
+    <aura:attribute name="totalCases" type="integer"/>
+    <aura:attribute name="totalTasks" type="integer"/>
+    <aura:attribute name="currentUser" type="User"/>  
+    <aura:attribute name="currentDate" type="Date"/>
+    <aura:attribute name="filterDate" type="Date" default="{!v.currentDate}"/>
+    <aura:attribute name="prevDate" type="Date"/>
+    <aura:attribute name="nextDate" type="Date"/>
+    
+  <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>    
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/> 
+  <aura:handler name="oppUpdateEvent" event="c:SalesAgentDesktopOppUpdateEvent" action="{!c.handleOppUpdate}"/>
+    <style>
+        td.resultCol:nth-child(even) {background: #CCC}
+
+        tr.removeHover:hover {
+          background-color: inherit;
+        }
+                
+        td.field_label:hover{ 
+        	text-decoration: underline; cursor:pointer 
+        }
+        
+        .spinnerHeight{
+        	height: 100%;
+        }
+        td.lead {
+        	background-color:#3ADF00;
+        }
+        tr.lead {
+        	background-color:#D8F6CE;
+        }
+        td.opp {
+        	background-color:#FE9A2E;
+        }
+        tr.opp {
+        	background-color:#F5ECCE;	
+        }
+        td.case {
+        	background-color:#F7FE2E;
+        }
+        tr.case {
+        	background-color:#F5F6CE;
+        }
+        th.header {
+        	text-decoration:underline;
+        }
+        span.link {
+        	text-decoration:underline;	
+        	cursor:pointer;
+        }
+        span.showRed.slds-truncate.slds-text-body--small.uiOutputDate {
+        	color:red;
+        }
+        span.showRed.slds-truncate.slds-text-body--small.uiOutputDateTime {
+        	color:red;
+        }
+        span.showRed.slds-truncate.slds-text-body--small.uiOutputText {
+        	color:red;
+        }
+        span.showRedDesc.slds-truncate.slds-text-body--small.uiOutputText {
+        	color:red;
+        	white-space:normal;
+        }
+        span.showBlack.slds-truncate.slds-text-body--small.uiOutputDate {
+        	color:black;
+        }
+        span.showBlack.slds-truncate.slds-text-body--small.uiOutputDateTime {
+        	color:black;
+        }
+        span.showBlack.slds-truncate.slds-text-body--small.uiOutputText {
+        	color:black;
+        }
+        span.showBlackDesc.slds-truncate.slds-text-body--small.uiOutputText {
+        	color:black;
+        	white-space:normal;
+        }
+        div.form-element.uiInput.uiInputDate.uiInput--default.uiInput--input.uiInput--datetime {
+        	display:inline;
+        }
+        .searchDatesOutput {
+        	text-decoration:underline;
+        	cursor:pointer;
+        }
+    	
+    </style>    
+    <div class="slds">
+    <div id="summaryHeader" class="slds-page-header">
+    <p class="slds-page-header__title" style="font-size:200%">{!$Label.c.My_Work_Label}</p></div>        
+      
+        
+        
+        <table id="summaryTable" class="slds-table slds-table--bordered slds-no-row-hover" style="width: 100%"> 
+        <tbody> 
+        <!-- CALENDAR CAN GO IN HERE -->
+        <!-- <td width="40%">
+            <c:CalendarComponent/>
+        </td> -->
+        <!-- <tr>
+        <td style="width:45%">
+        	    
+            <span class="slds-icon_container" onclick="{!c.doPreviousDay}">
+                <c:svgIcon colour="black" svgPath="/resource/SLDS090/assets/icons/utility-sprite/svg/symbols.svg#left" category="utility" size="small" name="left" />
+            </span>
+            
+            <span class="slds-icon_container" onclick="{!c.doNextDay}">
+                <c:svgIcon colour="black" svgPath="/resource/SLDS090/assets/icons/utility-sprite/svg/symbols.svg#right" category="utility" size="small" name="right" />
+            </span> 
+        </td>   
+        </tr> -->
+        <tr>
+        	<td width="100%">
+                <ui:inputDate aura:id="inputFilterDate" value="{!v.filterDate}" displayDatePicker="true" change="{!c.checkDateChange}"/>
+                <ui:button label="Go" press="{!c.doAllDateFilter}"/>
+                <ui:button label="Today" press="{!c.doTodayFilter}"/>  
+                <ui:button label="Refresh" press="{!c.refreshViews}"/>
+            </td>    
+        </tr>
+        <tr>
+        <td style="width: 100%">  
+        <div class="slds-form-element">
+            <label><b>Select Filter</b></label><br/>
+        <ui:inputSelect class="slds-select" aura:id="objectSelect" multiple="false" change="{!c.objectSelectChange}">
+            <ui:inputSelectOption text="ALL" label="{!'--All-- ' + v.totalRecords + ' records'}"/>
+            <ui:inputSelectOption text="lead" label="{!'Leads - ' + v.totalLeads + ' records'}"/>
+            <ui:inputSelectOption text="opp" label="{!'Opportunities - ' + v.totalOpps + ' records'}"/>
+            <ui:inputSelectOption text="case" label="{!'Cases - ' + v.totalCases + ' records'}"/>
+            <!-- <ui:inputSelectOption text="task" label="Tasks"/> -->
+        </ui:inputSelect>
+        </div>
+            <!-- ****** CASES ****** -->
+             
+            <aura:renderIf isTrue="{!v.todayCases.length > 0}">
+            <table width="100%" aura:id="caseTable">
+                <thead>
+                    <th scope="col" style="text-align: center;">
+                        <b>{!$Label.c.Cases_Label} for <ui:outputDate value="{!v.filterDate}"/></b>
+                    </th>
+                    <th></th>  
+                </thead>
+            
+              <table>
+                  <aura:iteration items="{!v.todayCases}" var="casesToday" >
+                    <!-- <aura:renderIf isTrue="{!casesToday.label == 'Booking Cases'}">
+                        <c:SalesAgentDesktopViewComponent viewWrapper="{!casesToday}" colHeaders="{!v.bookingCaseColumnHeaders}" objectType="Case" cssClass="case" filterDate="{!v.currentDate}"/> 
+                    </aura:renderIf> -->
+                    <!-- <aura:renderIf isTrue="{!casesToday.label != 'Booking Cases'}"> -->
+                        <c:SalesAgentDesktopViewComponent viewWrapper="{!casesToday}" colHeaders="{!v.leadOppCaseColumnHeaders}" objectType="Case" cssClass="case" filterDate="{!v.currentDate}"/> 
+                    <!-- </aura:renderIf> -->
+                  </aura:iteration>
+              </table>
+            </table>
+            </aura:renderIf>
+          <!-- ****** LEADS ****** -->
+          <aura:renderIf isTrue="{!v.todayLeads.length > 0}">
+          <table width="100%" aura:id="leadTable">
+            <thead>
+              <th scope="col" style="text-align: center;">
+                  <b>{!$Label.c.Leads_Label} for <ui:outputDate value="{!v.filterDate}"/></b>
+              </th>
+            </thead>
+            
+              <table >               
+              <aura:iteration items="{!v.todayLeads}" var="leadToday" >
+                  <c:SalesAgentDesktopViewComponent viewWrapper="{!leadToday}" colHeaders="{!v.leadColumnHeaders}" objectType="Lead" cssClass="lead" filterDate="{!v.currentDate}"/>
+              </aura:iteration> 
+              </table>
+            </table>
+            </aura:renderIf>
+            <!-- ****** OPPORTUNITIES ****** -->
+            <aura:renderIf isTrue="{!v.todayOpps.length > 0}">
+            <table width="100%" aura:id="oppTable">
+                <thead>
+             	 <th scope="col" style="text-align: center;">
+                     <b>{!$Label.c.Opportunities_Label} for <ui:outputDate value="{!v.filterDate}"/></b>
+                 </th>
+            	</thead>
+
+                <table>
+              <aura:iteration items="{!v.todayOpps}" var="oppsToday" >
+                <c:SalesAgentDesktopViewComponent viewWrapper="{!oppsToday}" colHeaders="{!v.oppColumnHeaders}" objectType="Opp" cssClass="opp" filterDate="{!v.currentDate}"/>
+              </aura:iteration>
+              </table>
+            </table>
+            </aura:renderIf>            
+        </td>
+        </tr>
+        </tbody>
+        </table>
+   </div>
+   <ui:spinner aura:id="spinner" class="spinnerHeight"/>
+    
+</aura:component>

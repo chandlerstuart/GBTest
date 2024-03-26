@@ -1,0 +1,18 @@
+.THIS {
+}
+.THIS .slds-button_icon-border.slds-is-selected{
+    background-color:#b0d630;
+    border-color:#b0d630;
+}
+.THIS .slds-button_icon-border.slds-is-selected:hover{
+    background-color:#b0d630;
+    border-color:#b0d630;
+}
+.THIS .slds-button_icon-border-inverse.slds-is-selected{
+    background-color:#b0d630;
+    border-color:#b0d630;
+}
+.THIS .slds-button_icon-border.slds-is-selected:focus{
+    background-color:#b0d630;
+    border-color:#b0d630;
+}

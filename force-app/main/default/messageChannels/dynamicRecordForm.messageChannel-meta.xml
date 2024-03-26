@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This message channel is used to send data to the Dynamic Record Form lwc.</description>
+    <isExposed>true</isExposed>
+    <lightningMessageFields>
+        <description>This is the id of the record we want to display.</description>
+        <fieldName>recordId</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>The title for the display form.</description>
+        <fieldName>title</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>The api name for the record&apos;s object type.</description>
+        <fieldName>objectApiName</fieldName>
+    </lightningMessageFields>
+    <masterLabel>Dynamic Record Form</masterLabel>
+</LightningMessageChannel>

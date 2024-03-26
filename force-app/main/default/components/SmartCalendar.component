@@ -1,0 +1,402 @@
+<!-- /*
+Name:  SmartCalendar.component
+Copyright © 2014  Kaptio
+======================================================
+======================================================
+Purpose:
+-------
+Contains a calendar displaying leave requests,
+working patterns and public holidays.
+
+Accepts the parameter ApprovedOnly which determines
+whether to display all leave requests or just approved
+ones.
+
+======================================================
+======================================================
+History
+------- 
+Ver. Author                Date                  Detail
+1.0  Halldór Örn        2014-05-23      Initial development.
+1.0  Halldór Örn        2014-07-30      Added to page for persistant filtering.
+1.1  J Radcliffe        2021-10-07      Added support for multiple levels of hierarchy (direct and indirect reports) from the MyTeams page
+*/ -->
+<apex:component controller="SmartCalendarController">
+
+    <apex:attribute name="ApprovedOnly" description="Boolean variable to determine if any status leaves should be displayed or Approved only" type="Boolean" required="false" default="false"/>
+    <apex:variable var="filterPage" value="{!IF(NOT(ApprovedOnly), 'MyTeam','LeaveCalendar')}" />
+
+    <apex:attribute name="myTeamsFilterSelection" description="The value of the select list passed from the My Team VF Page"
+                    type="String" assignTo="{!listType}"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.Kaptio_assets, 'css/pure.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.Kaptio_assets, 'css/bootstrap.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.Kaptio_assets, 'js/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.Kaptio_assets, 'js/bootstrap.min.js')}" />
+    
+    <style>
+        .oRight{position: relative;}
+        table.outer{position: relative;}
+        .tableWrap{width:95%; margin:40px auto;position: relative;}
+        .filter{width:80%; margin: 0px auto 20px;}
+        .filter td.active{font-weight: bold;}
+        .LeaveOverview{border-left: 1px solid #555; border-top: 1px solid #555;}
+        .LeaveOverview td,.LeaveOverview th{padding:5px; border-right: 1px solid #555; border-bottom: 1px solid #555; width:40px;}
+
+        .pure-table{display: table; height: auto;}
+        .pure-table{height:100%;}
+        .pure-table th{
+            text-align: center;
+            font-size: 11px; 
+            vertical-align: middle; 
+            border-bottom: 1px solid #CBCBCB;
+            padding:0.5em;
+        }
+        .pure-table th.today{
+            border-color: #bbb;
+            background:#ccc;
+        }
+        
+        .pure-table td{padding:0; display: table-cell; vertical-align: top;height:100%; position:relative; background-clip: padding-box !important;}
+        .pure-table td.first{
+            background: #959597; color:#323232; font-weight: normal; padding-left:10px; vertical-align: middle;
+            padding:6px 12px 6px 10px;
+            /*white-space: nowrap;*/
+        }
+        .pure-table td.first, .pure-table th.first{max-width: 100px; width:auto;}
+        
+        .pure-table .background{width: 100%; height: 100%; overflow: auto; -moz-box-sizing: border-box; position:absolute;}
+        .pure-table .am .background{ width: 50%; left: 0%; }
+        .pure-table .pm .background{ width: 50%; left: 50%;}
+
+        .weekday{ background: #fff; }       
+        .weekday.today{ 
+            background: #FFFDD5;
+            border-right: 1px solid #BBB;
+            border-left: 1px solid #BBB;
+        }
+        .weekend.today{         
+            border-right: 1px solid #AAA;
+            border-left: 1px solid #AAA;
+        }
+        td.approved .background,
+        td.approved.weekday .background,
+        td.approved.weekday.requested.dayOff .background,
+        td.approved.holiday,
+        .legend .approved{ background: #cc0000; }
+
+        td.well-being .background,
+        td.well-being.weekday .background,
+        td.well-being.weekday.requested.dayOff .background,
+        td.well-being.holiday,
+        .legend .well-being{ background: #8ab529; }
+
+        td.requested .background, 
+        td.requested.weekday .background, 
+        td.weekend.workingPattern.workday.requested .background,
+        td.requested.holiday,
+        .legend .requested{ background: #FD7D02; }
+
+        td.rejected .background{background: #fff; }
+        td.cancelled .background, 
+        td.weekday.cancelled .background{ background: rgb(66, 184, 221); }
+        td.holiday .background, 
+        td.holiday.requested .background, 
+        td.holiday.approved .background,
+        td.holiday.weekday .background,
+        .legend .holiday{ background: #685CC4; }
+
+        td.weekend .background,
+        td.weekend.requested .background,
+        td.weekend.holiday .background,
+        td.weekend.approved .background,
+        .legend .weekend{ background: #e6e1e5; }
+
+        td.weekend.workingPattern.workday, 
+        td.weekend.workingPattern.workday .background{
+            background: repeating-linear-gradient(
+              45deg,
+              #FFF,
+              #FFF 10px,
+              #e6e1e5 10px,
+              #e6e1e5 20px
+            );
+        }
+        .legend .weekend.workingPattern.workday{
+            background: repeating-linear-gradient(
+              45deg,
+              #FFF,
+              #FFF 3px,
+              #e6e1e5 3px,
+              #e6e1e5 6px
+            );
+        }
+        .weekend.workingPattern.workday.approved{background: #CC0000;}
+
+        .pure-table td.first{background: #fff !important;}
+        
+        .legend{text-align: center; width:100%;margin-top:20px; }
+        .legend span{
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 1px solid #555;
+            position: relative;
+            top: 4px;
+            margin-right: 4px;
+        }
+        .legend label{
+            margin-right: 25px;
+            padding-right: 20px;
+            border-right: 1px solid #555;
+        }
+        .legend label.last{border:none;}
+        .controls{text-align: center;margin-top:5px;}
+        .actionbar{
+            position: absolute;
+            left: 240px;
+            top: 35px;
+
+        }
+        .actions {margin-bottom:5px; display: inline-block;}
+        .actions label{float: left; display: inline-block; margin-right: 25px;}
+        .actions input{float: left; display: inline-block; margin-right: 5px;}
+        .popover{min-width: 180px;}
+        .popover-title{padding-bottom: 0; font-weight: bold;}
+        .popover-content p{margin-bottom: 5px;}
+        .loader{
+            position: absolute;
+            top: 70px;
+            left: 590px;
+        }
+        .paginator{
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+        .paginator img{
+            position: relative;
+            top: -2px;
+        }
+        .close-btn{
+            position: absolute;
+            right: 3px;
+            top: 3px;
+            padding: 0 4px 2px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        [id*=ajaxStatus]{
+            position: absolute;
+            top: 30px;
+            width:200px;
+            text-align:center;
+            left:50%;
+            margin-left:-100px;
+            z-index: 100;
+        }
+    </style>
+
+    <apex:variable value="2" var="columnwidth" />
+    
+    <!-- <apex:outputText value="Please note that the Leave Calendar does not work correctly in Chrome.  Please use another 
+                            browser to view the Leave Calendar such as Microsoft Edge or Firefox." escape="false" style="color:red;font-weight:bold;"/> -->
+    
+    <apex:form style="width:100%;" styleClass="tableForm">
+        <apex:outputPanel layout="block" styleClass="actionbar" rendered="{!ApprovedOnly}">
+            <apex:selectList value="{!filterId}" size="1" styleClass="select-view selectpicker" id="selectView" style="display:inline-block;margin-right:5px;">                          
+                <apex:selectOptions value="{!ListViewOptions}"/>
+                <apex:actionSupport event="onchange"  onbeforedomupdate="killPopover()" action="{!resetFilter}" rerender="tableData, pagination,filterlinks,filter" status="ajaxStatus" oncomplete="initScript()"/>
+            </apex:selectList> 
+            <apex:outputpanel id="filterlinks">
+                <span class="fFooter"><a href="/ui/list/FilterEditPage?id={!filterId}&retURL=%2Fapex%2FLeaveCalendar">Edit</a> | <a href="/ui/list/FilterEditPage?ftype=s&retURL=%2Fapex%2FLeaveCalendar">Create New View</a></span>
+            </apex:outputpanel>
+        </apex:outputPanel>
+        <apex:actionStatus id="ajaxStatus" startText="Loading..."  stopText="" styleClass="loader" rendered="{!ApprovedOnly}"/>
+    
+
+        <div class="tableWrap">
+             <apex:dataTable value="{!calendar.filter}" var="filter" styleClass="filter" id="filter" width="100%">
+                <apex:column >
+                    <a href="/apex/{!filterPage}?year={!calendar.filter.prevYear}&month={!currentMonth}&filterId={!filterId}&page={!currentPageNumber}">{!calendar.filter.prevYear}</a>
+                </apex:column>
+                <apex:repeat value="{!calendar.filter.months}" var="month">
+                    <apex:column styleClass="{!IF(month.isCurrent, 'active', '')}">
+                        <a href="/apex/{!filterPage}?year={!currentYear}&month={!month.monthNumber}&filterId={!filterId}&page={!currentPageNumber}">{!month.monthName}</a>
+                    </apex:column>
+                </apex:repeat>
+                <apex:column >
+                    <a href="/apex/{!filterPage}?year={!calendar.filter.nextYear}&month={!currentMonth}&filterId={!filterId}&page={!currentPageNumber}">{!calendar.filter.nextYear}</a>
+                </apex:column>
+            </apex:dataTable>
+
+            <apex:outputPanel layout="block" styleclass="actions" rendered="{!Not(ApprovedOnly)}">
+                <strong style="float:left; margin-right:15px;">Show:</strong>
+                <label><input type="checkbox" checked="checked" data-class="requested" />Requested</label>
+                <label><input type="checkbox" checked="checked" data-class="approved" />Approved</label>
+                <!-- <label><input type="checkbox" checked="checked" data-class="rejected" />Rejected</label> -->
+            </apex:outputPanel>
+            <apex:outputPanel id="pagination" styleClass="paginator">
+                <apex:outputPanel rendered="{!pagination}" styleClass="prevNextLinks">
+                    <apex:outputPanel styleClass="prevNext">
+                        <apex:commandLink rendered="{!NOT(isFirst)}" value="" reRender="tableData,pagination,filter" status="ajaxStatus" oncomplete="initScript()" onclick="killPopover()" action="{!firstPage}" >
+                            <apex:image value="{!URLFOR('/s.gif')}" styleClass="first" alt="First Page"/>
+                        </apex:commandLink>
+                        <apex:image rendered="{!isFirst}" value="{!URLFOR('/s.gif')}" styleClass="firstoff" alt="First Page"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="prevNext">
+                        <apex:commandLink rendered="{!NOT(isFirst)}" reRender="tableData,pagination,filter" status="ajaxStatus" oncomplete="initScript()" onclick="killPopover()" action="{!prev}">
+                            <apex:image value="{!URLFOR('/s.gif')}" styleClass="prev" alt="Previous"/>
+                            <apex:outputText value="Previous" />
+                        </apex:commandLink>
+                        <apex:image rendered="{!isFirst}" value="{!URLFOR('/s.gif')}" styleClass="prevoff" alt="Previous"/>
+                        <apex:outputText rendered="{!isFirst}"  value="Previous" />
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="prevNext">
+                        <apex:commandLink rendered="{!NOT(isLast)}" reRender="tableData,pagination,filter" status="ajaxStatus" oncomplete="initScript()" onclick="killPopover()" action="{!next}">
+                            <apex:outputText value="Next" />
+                            <apex:image value="{!URLFOR('/s.gif')}" styleClass="next" alt="Next"/>
+                        </apex:commandLink>
+                        <apex:outputText rendered="{!isLast}"  value="Next" />
+                        <apex:image rendered="{!isLast}" value="{!URLFOR('/s.gif')}" styleClass="nextoff" alt="Next"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="prevNext">
+                        <apex:commandLink rendered="{!NOT(isLast)}" value="" reRender="tableData,pagination,filter" status="ajaxStatus" oncomplete="initScript()" onclick="killPopover()" action="{!lastPage}">
+                            <apex:image value="{!URLFOR('/s.gif')}" styleClass="last" alt="Last Page"/>
+                        </apex:commandLink>
+                        <apex:image rendered="{!isLast}" value="{!URLFOR('/s.gif')}" styleClass="lastoff" alt="Last Page"/>
+                    </apex:outputPanel>
+                    
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:outputPanel id="tableData">
+                <table width="100%;" cellpadding="0" cellspacing="0" class="pure-table pure-table-bordered" id="smartcalendar">
+                    <thead>
+                        <tr>
+                            <th class="first" width="100">{!Calendar.currentMonthName} {!Calendar.currentYear}</th>
+                            <apex:repeat value="{!Calendar.header.headerDays}" var="day">
+                                    
+                                <th class="{!day.headerclass}">{!day.weekday}<br />{!day.dateNo}</th>
+                                
+                            </apex:repeat>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!Calendar.rows}" var="tr">
+                            <tr class="{!tr.rowClass}">
+                                <td class="first"><a href="/{!tr.employee.Id}">{!tr.employee.FirstName} {!tr.employee.LastName}</a></td>
+                                <apex:repeat value="{!tr.data}" var="td">
+
+                                    <apex:variable var="hasLeave" value="{!IF(CONTAINS(td.dateClass,'hasLeave'), true, false)}" />
+                                    <apex:variable var="pathToNewRequest" value="/apex/redirect?object=Leave__c&ID_Employee__c={!tr.employee.Id}&Employee__c={!tr.employee.Name}&ID_EmployeeLeaveYear__c={!tr.leaveYearId}&EmployeeLeaveYear__c={!tr.leaveYearName}&StartDate__c={!td.dateString}&EndDate__c={!td.dateString}&PublicNote__c=Holiday&saveURL=%2Fapex%2FMyTeam" />
+                                    <apex:variable var="pathToNewSicknessRequest" value="/apex/redirect?object=Leave__c&ID_Employee__c={!tr.employee.Id}&Employee__c={!tr.employee.Name}&ID_EmployeeLeaveYear__c={!tr.leaveYearId}&EmployeeLeaveYear__c={!tr.leaveYearName}&StartDate__c={!td.dateString}&EndDate__c={!td.dateString}&PublicNote__c=Sickness&LeaveType__c=Sickness&saveURL=%2Fapex%2FMyTeam" />
+                                    
+                                    <apex:variable var="closeBtn" value="{!'<span class=\"close-btn pure-button button-warning\">x</span>'}" />
+                                    <apex:variable var="note" value="{!IF(td.Note != '', '<p>'+td.Note+'</p>','')}" />
+                                    <apex:variable var="period" value="{!IF(td.period != '', '<p>'+td.period+'</p>','')}" />
+                                    
+                                    <apex:variable var="approveReject" value="{!'<p class=\"controls\"><a href=\"#processRequest\" data-toggle=\"modal\" class=\"pure-button button-success approve approval actionlink\" data-action=\"approve\" data-requestId=\"'+td.leaveId+'\">Approve</a>&nbsp;<a href=\"#processRequest\" data-toggle=\"modal\" class=\"pure-button button-error reject approval actionlink\" data-action=\"reject\" data-requestId=\"'+td.leaveId+'\">Reject</a></p>'}" /> 
+                                    <apex:variable var="newRequest" value="{!'<p><a class=\"pure-button button-secondary new-request\" href=\"'+pathToNewRequest+'\">Holiday Request</a>&nbsp;<a class=\"pure-button button-secondary new-request\" href=\"'+pathToNewSicknessRequest+'\">Sickness Request</a></p>'}" />
+
+                                    <apex:variable var="buttons" value="{!IF( OR( td.hasHoliday == true, td.dayOff == true ) , '' , IF( td.showControls == true, approveReject, IF( tr.leaveYearId != '', newRequest, 'Leave year missing') ) )}" />
+                                    
+                                    <td class="{!td.dateClass}" data-class="{!td.dateClass}">
+                                        <apex:outputPanel layout="block" styleclass="background"  html-data-container="body" html-data-toggle="{!IF( AND( approvedOnly == true, td.hasHoliday != true , td.dayOff != true ), '', 'popover' )}" html-trigger="click" html-data-placement="top" html-data-html="true" html-data-content="{! closeBtn + note + period + buttons }" html-data-title="{!td.title}" />
+                                        </td>
+
+                                </apex:repeat>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                    
+                </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!Not(ApprovedOnly)}">
+                <div id="legend" class="legend">
+                    <span class="present"></span><label>Present</label>
+                    <span class="requested"></span><label>Requested</label>
+                    <span class="approved"></span><label>Approved</label>
+                    <!-- <span class="rejected"></span><label>Rejected</label>
+                    <span class="cancelled"></span><label>Cancelled</label>      -->
+                    <span class="weekend workingPattern workday"></span><label>Weekend Workday</label>
+                    <span class="weekend"></span><label>Weekend</label>
+                    <span class="holiday"></span><label class="last">Public Holiday</label>
+                </div>
+                
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!ApprovedOnly}">
+                <div  class="legend">                   
+                    <span class="approved"  data-class="approved" data-toggle="on"></span><label>Absent</label>
+                    <span class="weekend"   data-class="weekend" data-toggle="on"></span><label>Weekend</label>
+                    <span class="weekend workingPattern workday"></span><label>Weekend Workday</label>
+                    <span class="holiday"   data-class="holiday" data-toggle="on"></span><label class="last">Public Holiday</label>
+                </div>
+
+            </apex:outputPanel>
+
+        </div>
+    </apex:form>
+    <script>
+        $j = jQuery.noConflict();
+        jQuery(document).ready(function($j){
+
+            initScript();
+
+        });
+
+        function msieversion() {
+
+      var ua = window.navigator.userAgent;
+      var msie = ua.indexOf("MSIE ");
+
+      if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){
+        //  alert(parseInt(ua.substring(msie + 5, ua.indexOf(".", msie))));
+        return true;
+      } else    {
+           return false;
+      }
+        }
+        function initScript(){
+            // A function to allow simple control over onload operations 
+            // Used for rerendering purposes.
+
+            if(msieversion()){
+                
+                var tdHeight = $j('.pure-table tr td').not('.first').height();
+                $j('.pure-table .background').css('height', tdHeight+'px');
+            }
+            
+
+            $j('[data-toggle="popover"]').popover('enable');
+            $j('[data-toggle="popover"]').on('click', function () {
+                $j('[data-toggle="popover"]').not(this).popover('hide');
+            });
+
+            $j('body').on('click','.close-btn',function(){
+                $j('[data-toggle="popover"]').popover('hide');
+            });
+
+            
+            $j('.actions input[type="checkbox"]').on('click',function(){
+                var show = $j(this).is(':checked');
+                var className = $j(this).attr('data-class');
+                
+                if( !show ){
+                    $j('td.'+className).removeClass(className);
+                } else {
+                    $j('td[data-class*=" '+className+'"]').addClass(className);                 
+                }
+            });
+        }   
+
+        function killPopover(){
+            // A function for a simple way to hide popovers.
+            // Useful for rerendering purposes
+            $j('.popover').hide();
+        }
+
+    </script>
+
+</apex:component>

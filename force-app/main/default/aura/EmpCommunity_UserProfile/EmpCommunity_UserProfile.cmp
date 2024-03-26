@@ -1,0 +1,69 @@
+<aura:component implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="theUser" type="EmpCommunity_WhosWhoController.UserWrapper"/>
+    <aura:attribute name="showDetails" type="boolean" default="false"/>
+    <aura:renderIf isTrue="{!!v.showDetails}">
+        <tr>
+        <td class="slds-truncate">
+            <a href="{!'profile/' + v.theUser.userDetailRecord.id}">
+            <img class="profilePic" src="{!v.theUser.photoURL}" title="{!v.theUser.aboutMe}"/>
+            </a>
+        </td>
+        <td class="slds-truncate">
+            <ui:outputURL value="{!'profile/' + v.theUser.userDetailRecord.id}" label="{!v.theUser.userDetailRecord.firstName + ' ' + v.theUser.userDetailRecord.lastName}"/>
+            
+        </td>
+        <td class="slds-truncate">
+            <ui:outputText value="{!v.theUser.userDetailRecord.title}" />
+        </td>
+        <td class="slds-truncate">
+            <ui:outputText value="{!v.theUser.workPhone}"/>
+        </td>
+        <td class="slds-truncate">
+            <a href="{!'mailto:' + v.theUser.userDetailRecord.email}">{!v.theUser.userDetailRecord.email}</a>
+        </td>
+        <td class="slds-truncate">
+            <ui:outputURL value="{!'profile/' + v.theUser.userDetailRecord.managerId}" label="{!v.theUser.userDetailRecord.managerName}"/>
+        </td>
+        
+        </tr>
+    </aura:renderIf>
+    <aura:renderIf isTrue="{!v.theUser.showDetails}">
+        <tr>
+        <td colspan="6">
+        <article class="slds-card">
+          <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media--center slds-has-flexi-truncate">
+              <div class="slds-media__figure">
+                <img src="{!v.theUser.photoURL}"/>
+              </div>
+              <div class="slds-media__body slds-truncate">
+                <h2>
+                  <a href="javascript:void(0);" class="slds-text-link--reset">
+                    <ui:outputURL value="{!'profile/' + v.theUser.userDetailRecord.id}" label="{!v.theUser.userDetailRecord.firstName + ' ' + v.theUser.userDetailRecord.lastName}"/>
+                  </a>
+                </h2>
+              </div>
+            </header>
+            <!-- <div class="slds-no-flex">
+              <button class="slds-button slds-button-*neutral">New</button>
+            </div> -->
+          </div>
+          <div class="slds-card__body slds-text-align--left slds-m-left--small">
+            <label class="slds-form-element__label slds-text-body--regular">Email:</label>
+              <a href="{!'mailto:' + v.theUser.userDetailRecord.email}">{!v.theUser.userDetailRecord.email}</a><br/>
+            <label class="slds-form-element__label slds-text-body--regular">Phone:</label>
+              <ui:outputText value="{!v.theUser.workPhone}"/><br/>
+            <label class="slds-form-element__label slds-text-body--regular">Title:</label>
+              <ui:outputText value="{!v.theUser.title}"/><br/>
+            <label class="slds-form-element__label slds-text-body--regular">Manager:</label>
+              <ui:outputText value="{!v.theUser.managerName}"/><br/>
+            <label class="slds-form-element__label slds-text-body--regular">About {!v.theUser.firstName}:</label>
+              <p style="white-space:normal;">{!v.theUser.aboutMe}</p>
+          </div>
+          <!-- <div class="slds-card__footer">Card Footer</div> -->
+        </article>
+        </td>
+        </tr>
+    </aura:renderIf>
+    
+</aura:component>

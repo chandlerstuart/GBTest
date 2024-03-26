@@ -1,0 +1,34 @@
+<template>
+    <lightning-record-view-form
+        object-api-name=Conversation__c
+        record-id={recordId}
+    >
+    </lightning-record-view-form>
+
+    <template if:true={showMatches}>
+        <template if:true={hasMultipleMatches}>
+            
+        </template>
+        <template if:false={hasMultipleMatches}>
+            <div class="slds-notify_container slds-is-relative">
+                <div class="slds-notify slds-notify_toast slds-theme_info" role="status">
+                    <span class="slds-assistive-text">info</span>
+                        <lightning-icon class="slds-p-right_medium light-bulb" icon-name="utility:light_bulb"></lightning-icon>
+                        <div class="slds-notify__content">
+                            <h2 class="slds-text-heading_small">We've found a client with a matching phone number. Is this the client you are speaking to?:&nbsp;&nbsp; 
+                            </h2>
+                            <span class="slds-text-heading_small">
+                            <span><lightning-formatted-text value={singleMatch.FirstName}></lightning-formatted-text></span>&nbsp;
+                            <span><lightning-formatted-text value={singleMatch.LastName}></lightning-formatted-text></span>&nbsp;
+                            <span>(<lightning-formatted-text value={singleMatch.PersonEmail}></lightning-formatted-text>)</span></span>
+                        </div>
+                        <span class="slds-text-align_right">
+                            <lightning-button variant="brand-outline" label="Yes it is!" title="Matching client" onclick={setAccountLookup} class="slds-m-left_x-small confirmationButton"></lightning-button>
+                            <lightning-button variant="brand-outline" label="Nope" title="Matching client" onclick={hideMatches} class="slds-m-left_x-small confirmationButton"></lightning-button>
+                        </span>
+                    </div>
+                </div>
+        </template>
+    </template>
+
+</template>

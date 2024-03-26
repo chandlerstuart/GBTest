@@ -1,0 +1,35 @@
+<aura:component controller="CallTrackingUtilityController" implements="flexipage:availableForAllPageTypes,lightning:backgroundUtilityItem">
+    
+    <aura:attribute name="nvmUsers" type="List"/>
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="value" type="String"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="polling" type="Boolean"/>
+    <aura:attribute name="onACall" type="Boolean"/>
+    <aura:attribute name="activeStatusId" type="String"/>
+    <aura:attribute name="isNVMUser" type="Boolean"/>
+    <aura:attribute name="unrecognisedPhoneNumber" type="String"/>
+
+    <!--Design Attributes-->
+    <aura:attribute name="customMessage" type="String"/>
+    <aura:attribute name="messageTypeDeveloperName" type="String" default="REPLACE_WITH_DEV_NAME" required="true"/>
+    <aura:attribute name="pollingInterval" type="Integer" default="15" required="true"/>
+    <aura:attribute name="minimumConnectedCallTime" type="Integer" default="10" required="true"/>
+    <aura:attribute name="onACallAgentStatusId" type="String" required="true" default="REPLACE_WITH_ON_A_CALL_PRESENCE_STATUS_ID"/>
+
+    <aura:handler value="{!this}" name="init" action="{!c.onInit}"/>
+    <aura:handler event="lightning:omniChannelStatusChanged" action="{! c.handleAgentOmniStatusChange }"/>
+    <aura:handler value="{!v.polling}" name="change" action="{!c.handlePollingStatusChange}"/>
+    <aura:handler value="{!v.onACall}" name="change" action="{!c.handleOnACallChange}"/>
+    <aura:handler event="lightning:tabFocused" action="{! c.onTabFocused }"/> 
+
+
+    <lightning:utilityBarAPI aura:id="utilitybar"/>
+    <lightning:omniToolkitAPI aura:id="omniToolkit" />  
+    <lightning:workspaceAPI aura:id="workspace" />	
+
+    <lightning:combobox name="progress" label="Status" value="{!v.value}" placeholder="Select a user" options="{! v.options }" onchange="{!c.handleUserSelection}"/>
+    <lightning:button variant="brand-outline" label="Execute" title="Execute" disabled="{!empty(v.value)}" onclick="{! c.execute }" />
+    <lightning:formattedText value="{!v.message}"/>
+
+</aura:component>

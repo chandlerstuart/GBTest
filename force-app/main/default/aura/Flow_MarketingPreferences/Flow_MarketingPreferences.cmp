@@ -1,0 +1,204 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" >
+    <aura:attribute name="phone" type="Boolean"/>
+    <aura:attribute name="sms" type="Boolean"/>
+    <aura:attribute name="brochure" type="Boolean"/>
+    <aura:attribute name="weeklyNewsletter" type="Boolean"/>
+    <aura:attribute name="seasonalNewsletter" type="Boolean"/>
+    <aura:attribute name="tournamentsNewsletter" type="Boolean"/>
+    <aura:attribute name="eventsNewsletter" type="Boolean"/>
+
+    <aura:attribute name="iconSize" type="String"/>
+    <aura:attribute name="textSize" type="String"/>
+    <aura:attribute name="wrapIcons" type="Boolean"/>
+    <aura:attribute name="padding" type="String" default="small"/>
+    <aura:handler name="init" action="{!c.onInit}" value="{!this}"/>
+    
+    <div aura:id="container">
+        <aura:if isTrue="{!not(v.wrapIcons)}">
+            <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="top">
+                <!-- Preferences -->
+                <lightning:layoutItem size="2" padding="horizontal-medium">
+                    <button aura:id="home" id="brochure" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                        <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                            <lightning:layout multipleRows="true">
+                                <lightning:layoutItem size="12">
+                                    <lightning:icon size="{!v.iconSize}" iconName="utility:home" alternativeText="Brochure" class="{!v.brochure? 'subscribed':'unsubscribed'}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                    <lightning:formattedText value="Brochure" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2" padding="horizontal-medium">
+                    <button id="weeklyNewsletter" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                        <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                            <lightning:layout multipleRows="true">
+                                <lightning:layoutItem size="12">
+                                    <lightning:icon size="{!v.iconSize}" iconName="utility:email" alternativeText="Weekly Newsletter" class="{!v.weeklyNewsletter? 'subscribed':'unsubscribed'}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" class="slds-align_absolute-center">    
+                                    <lightning:formattedText value="Weekly Newsletter" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2" padding="horizontal-medium">
+                    <button id="seasonalNewsletter" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                        <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                            <lightning:layout multipleRows="true">
+                                <lightning:layoutItem size="12">
+                                    <lightning:icon size="{!v.iconSize}" iconName="utility:email" alternativeText="Seasonal Newsletter" class="{!v.seasonalNewsletter? 'subscribed':'unsubscribed'}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                    <lightning:formattedText value="Seasonal Newsletter" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2" padding="horizontal-medium">
+                    <button id="sms" class="slds-button" style="width:100%; line-height:1rem;" onclick="{!c.togglePreference}">
+                        <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                            <lightning:layout multipleRows="true">
+                                <lightning:layoutItem size="12">
+                                    <lightning:icon size="{!v.iconSize}" iconName="utility:sms" alternativeText="SMS" class="{!v.sms? 'subscribed':'unsubscribed'}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                    <lightning:formattedText value="SMS Messages" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2" padding="horizontal-medium">
+                    <button id="phone" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                        <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                            <lightning:layout multipleRows="true">
+                                <lightning:layoutItem size="12">
+                                    <lightning:icon size="{!v.iconSize}" iconName="utility:outbound_call" alternativeText="Proactive Call"  class="{!v.phone? 'subscribed':'unsubscribed'}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                    <lightning:formattedText value="Proactive Call" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </button>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <aura:set attribute="else">
+
+                <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="top">
+                    <!--row1-->
+                    <lightning:layoutItem size="3">
+                        <button id="weeklyNewsletter" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:email" alternativeText="Weekly Newsletter" class="{!v.weeklyNewsletter? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">    
+                                        <lightning:formattedText value="Weekly Newsletter" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <button id="seasonalNewsletter" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:email" alternativeText="Seasonal Newsletter" class="{!v.seasonalNewsletter? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                        <lightning:formattedText value="Seasonal Newsletter" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <button id="tournamentsNewsletter" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:email" alternativeText="Tournaments Newsletter" class="{!v.tournamentsNewsletter? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">    
+                                        <lightning:formattedText value="Tournaments Newsletter" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <button id="eventsNewsletter" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:email" alternativeText="Events Newsletter" class="{!v.eventsNewsletter? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">    
+                                        <lightning:formattedText value="Events Newsletter" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="1"/>
+                    <lightning:layoutItem size="3" class="slds-p-top_medium">
+                        <button id="sms" class="slds-button" style="width:100%; line-height:1rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:sms" alternativeText="SMS" class="{!v.sms? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                        <lightning:formattedText value="SMS Messages" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <!--row2-->
+                    <lightning:layoutItem size="1"/>
+                    <lightning:layoutItem size="3" class="slds-p-top_medium">
+                        <button aura:id="home" id="brochure" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:home" alternativeText="Brochure" class="{!v.brochure? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                        <lightning:formattedText value="Brochure" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="1"/>
+                    <!--row3-->
+                    <lightning:layoutItem size="3" class="slds-p-top_medium">
+                        <button id="phone" class="slds-button" style="width:100%; line-height:1.2rem;" onclick="{!c.togglePreference}">
+                            <div class="slds-wrap slds-align_absolute-center slds-text-align_center">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:icon size="{!v.iconSize}" iconName="utility:outbound_call" alternativeText="Proactive Call"  class="{!v.phone? 'subscribed':'unsubscribed'}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                        <lightning:formattedText value="Proactive Call" class="{!'slds-p-horizontal_small ' + v.textSize}"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </button>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="1"/>
+                </lightning:layout>
+            </aura:set>
+        </aura:if>
+    </div>
+    
+</aura:component>
